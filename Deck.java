@@ -117,14 +117,27 @@ public class Deck {
 		boolean blackjack;
 		String x = deck.getCard(0).getValue().toString();
 		String y = deck.getCard(1).getValue().toString();
-		if (x.equals("ACE") && (y.equals("JACK") || y.equals("QUEEN") || y.equals("KING"))) {
+		if (x.equals("ACE") && (y.equals("TEN") || y.equals("JACK") || y.equals("QUEEN") || y.equals("KING"))) {
 			blackjack = true;
-		} else if (y.equals("ACE") && (x.equals("JACK") || x.equals("QUEEN") || x.equals("KING"))) {
+		} else if (y.equals("ACE") && (x.equals("TEN") || x.equals("JACK") || x.equals("QUEEN") || x.equals("KING"))) {
 			blackjack = true;
 		} else {
 			blackjack = false;
 		}
 		return blackjack;
+	}
+	
+	public static boolean checkSplit(Deck pDeck) {
+		boolean split;
+		Value x = pDeck.getCard(0).getValue();
+		Value y = pDeck.getCard(1).getValue();
+
+		if (x == y || (x.toString() == "TEN" || x.toString() == "JACK" || x.toString() == "QUEEN" || x.toString() == "KING") && (y.toString() == "TEN" || y.toString() == "JACK" || y.toString() == "QUEEN" || y.toString() == "KING")) {
+			split = true;
+		} else {
+			split = false;
+		}
+		return split;
 	}
 
 }

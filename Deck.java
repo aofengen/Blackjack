@@ -139,5 +139,11 @@ public class Deck {
 		}
 		return split;
 	}
-
+	
+	public Deck splitDeck(Deck pDeck) {
+		Deck tmpDeck = new Deck();
+		tmpDeck.addCard(pDeck.getCard(1));
+		pDeck.removeCard(1);
+		return tmpDeck;
+	}
 }

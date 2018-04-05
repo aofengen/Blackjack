@@ -7,7 +7,7 @@ public class Deck {
 	
 	private ArrayList<Card> cards;
 	String handWinner;
-	boolean doubleDown, split, bust, checked, stand, blackjack; //endRound,
+	boolean doubleDown, split, splitAces, bust, checked, stand, blackjack;
 	
 	public Deck() {
 		//create new deck
@@ -15,7 +15,7 @@ public class Deck {
 		this.handWinner = "";
 		this.doubleDown = false;
 		this.split = false;
-		//this.endRound = false;
+		this.splitAces = false;
 		this.bust = false;
 		this.checked = false;
 		this.stand = false;
@@ -32,80 +32,80 @@ public class Deck {
 	}
 	
 	//methods to recall object values
-		public String getWinner() {
-			return this.handWinner;
-		}
-		
-		public boolean getDoubleDown() {
-			return this.doubleDown;
-		}
-		
-		public boolean getSplit() {
-			return this.split;
-		}		
-		
-//		public boolean getEndRound() {
-//			return this.endRound;
-//		}
-//		
-		public boolean getBust() {
-			return this.bust;
-		}
-		
-		public boolean getChecked() {
-			return this.checked;
-		}
-		
-		public boolean getStand() {
-			return this.stand;
-		}
-		public boolean getBlackjack() {
-			return this.blackjack;
-		}
-		
-		//methods to set object values
-		
-		public void setWinner(String hW) {
-			this.handWinner = hW;
-		}
-		
-		public void setDoubleDown(boolean dD) {
-			this.doubleDown = dD;
-		}
+	public String getWinner() {
+		return this.handWinner;
+	}
+	
+	public boolean getDoubleDown() {
+		return this.doubleDown;
+	}
+	
+	public boolean getSplit() {
+		return this.split;
+	}		
+	
+	public boolean getSplitAces() {
+		return this.splitAces;
+	}
+	
+	public boolean getBust() {
+		return this.bust;
+	}
+	
+	public boolean getChecked() {
+		return this.checked;
+	}
+	
+	public boolean getStand() {
+		return this.stand;
+	}
+	public boolean getBlackjack() {
+		return this.blackjack;
+	}
+	
+	//methods to set object values
+	
+	public void setWinner(String hW) {
+		this.handWinner = hW;
+	}
+	
+	public void setDoubleDown(boolean dD) {
+		this.doubleDown = dD;
+	}
 
-		public void setSplit(boolean sp) {
-			this.split = sp;
-		}
+	public void setSplit(boolean sp) {
+		this.split = sp;
+	}
 
-//		public void setEndRound(boolean eR) {
-//			this.endRound = eR;
-//		}
-		
-		public void setBust(boolean bu) {
-			this.bust = bu;
-		}
+	public void setSplitAces(boolean sA) {
+		this.splitAces = sA;
+	}
 
-		public void setChecked(boolean c) {
-			this.doubleDown = c;
-		}
-		
-		public void setStand(boolean st) {
-			this.doubleDown = st;
-		}
-		
-		public void setBlackjack(boolean bl) {
-			this.blackjack = bl;
-		}
-		
-		public void resetOptions() {
-			this.handWinner = "";
-			this.doubleDown = false;
-			this.split = false;
-			//this.endRound = false;
-			this.bust = false;
-			this.checked = false;
-			this.stand = false;
-		}
+	public void setBust(boolean bu) {
+		this.bust = bu;
+	}
+
+	public void setChecked(boolean c) {
+		this.checked = c;
+	}
+	
+	public void setStand(boolean st) {
+		this.stand = st;
+	}
+	
+	public void setBlackjack(boolean bl) {
+		this.blackjack = bl;
+	}
+	
+	public void resetOptions() {
+		this.handWinner = "";
+		this.doubleDown = false;
+		//this.split = false;
+		//this.splitAces = false;
+		this.bust = false;
+		this.checked = false;
+		this.stand = false;
+	}
 	
 	public void shuffle() {
 		ArrayList<Card> tmpDeck = new ArrayList<Card>();
@@ -187,6 +187,11 @@ public class Deck {
 		return totalValue;
 	}
 
+	public String cardValue(int i) {
+		String x = this.getCard(i).getValue().toString();
+		return x;
+	}
+	
 	public void moveAllToDeck(Deck moveTo) {
 		int thisDeckSize = this.cards.size();
 		
@@ -226,10 +231,8 @@ public class Deck {
 		return split;
 	}
 	
-	public Deck splitDeck(Deck pDeck) {
-		Deck tmpDeck = new Deck();
-		tmpDeck.addCard(pDeck.getCard(1));
+	public void splitDeck(Deck pDeck) {
+		this.addCard(pDeck.getCard(1));
 		pDeck.removeCard(1);
-		return tmpDeck;
 	}
 }

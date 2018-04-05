@@ -43,81 +43,8 @@ public class blackjack {
 			System.out.println("Welcome to the game!");
 			
 			while (monies.get(0) > 0) {
-			
-			playerTurn(decks, monies, sc);
-			//dealerTurn(decks, monies, sc);
-			
-				//show dealer cards
-				double playerMoney = monies.get(0);
-				double playerBet = monies.get(1);
-			
-				playerDeck = decks.get(1);
-				dealerDeck = decks.get(5);
-			
-				System.out.println("Dealer Cards:" + dealerDeck.toString());
-				
-				//display total for dealer
-				System.out.println("Dealer's hand is valued at: " + dealerDeck.cardsValue());
-				
-				//dealers draws at 16 and hits at 17
-				while (dealerDeck.cardsValue() < 17) {
-					if (playerDeck.getBlackjack() == true || dealerDeck.getBlackjack() == true) {
-						break;
-					}
-					dealerDeck.draw(mainDeck);
-					System.out.println("Dealer draws :" + dealerDeck.getCard(dealerDeck.deckSize()-1).toString());
-					
-					//display total for dealer
-					System.out.println("Dealer's hand is valued at: " + dealerDeck.cardsValue());
-					if (dealerDeck.cardsValue() > 21) {
-						System.out.println("Dealer Busts!");
-						dealerDeck.setBust(true);
-					}
-				}
-					
-				//see who won
-				
-				for (int i = 1; i < 5; i++) {	
-					//Did dealer bust?
-					if (decks.get(i).deckSize() > 0) {
-						playerDeck = decks.get(i);
-						if (playerDeck.getBust() == true) {
-							playerMoney = handleMoney(playerDeck.getWinner(), playerMoney, playerBet);
-							monies.set(0, playerMoney);
-						} else if (dealerDeck.getBust() == true) {
-							if (playerDeck.getDoubleDown()) {
-								checkHandDouble(playerDeck);
-							}
-							
-							playerDeck.setWinner(checkHand(playerDeck, dealerDeck));
-							playerMoney = handleMoney(playerDeck.getWinner(), playerMoney, playerBet);
-							monies.set(0, playerMoney);
-						} else {
-							//Who wins?
-							if (playerDeck.getDoubleDown()) {
-								checkHandDouble(playerDeck);
-							}
-							
-							playerDeck.setWinner(checkHand(playerDeck, dealerDeck));
-							playerMoney = handleMoney(playerDeck.getWinner(), playerMoney, playerBet);
-							monies.set(0, playerMoney);
-						}
-					}
-				}
-				
-				
-				for (int i = 1; i < decks.size(); i++) {
-					if (decks.get(i).deckSize() > 0) {
-						decks.get(i).moveAllToDeck(mainDeck);
-					}
-				}
-				
-				dealerDeck.resetOptions();
-				
-				decks.set(0, mainDeck);
-				decks.set(5, dealerDeck);
-				System.out.println("End of Hand");
-
+				playerTurn(decks, monies, sc);
+				dealerTurn(decks, monies, sc);
 			}
 			
 			System.out.println("You're out of money. Game Over!");
@@ -323,9 +250,81 @@ public class blackjack {
 		}
 	}
 		
-//		public static void dealerTurn(ArrayList<Deck> dList, ArrayList<Double> mList, Scanner sc) {
-//			
-//		}
+		public static void dealerTurn(ArrayList<Deck> decks, ArrayList<Double> monies, Scanner sc) {
+			//show dealer cards
+			double playerMoney = monies.get(0);
+			double playerBet = monies.get(1);
+			
+			Deck mainDeck = decks.get(0);
+			Deck playerDeck = decks.get(1);
+			Deck dealerDeck = decks.get(5);
+		
+			System.out.println("Dealer Cards:" + dealerDeck.toString());
+			
+			//display total for dealer
+			System.out.println("Dealer's hand is valued at: " + dealerDeck.cardsValue());
+			
+			//dealers draws at 16 and hits at 17
+			while (dealerDeck.cardsValue() < 17) {
+				if (playerDeck.getBlackjack() == true || playerDeck.getBust() == true || dealerDeck.getBlackjack() == true) {
+					break;
+				}
+				dealerDeck.draw(mainDeck);
+				System.out.println("Dealer draws :" + dealerDeck.getCard(dealerDeck.deckSize()-1).toString());
+				
+				//display total for dealer
+				System.out.println("Dealer's hand is valued at: " + dealerDeck.cardsValue());
+				if (dealerDeck.cardsValue() > 21) {
+					System.out.println("Dealer Busts!");
+					dealerDeck.setBust(true);
+				}
+			}
+				
+			//see who won
+			
+			for (int i = 1; i < 5; i++) {	
+				//Did dealer bust?
+				if (decks.get(i).deckSize() > 0) {
+					playerDeck = decks.get(i);
+					if (playerDeck.getBust() == true) {
+						playerMoney = handleMoney(playerDeck.getWinner(), playerMoney, playerBet);
+						monies.set(0, playerMoney);
+					} else if (dealerDeck.getBust() == true) {
+						if (playerDeck.getDoubleDown() == true) {
+							checkHandDouble(playerDeck);
+						}
+						
+						playerDeck.setWinner(checkHand(playerDeck, dealerDeck));
+						playerMoney = handleMoney(playerDeck.getWinner(), playerMoney, playerBet);
+						monies.set(0, playerMoney);
+					} else {
+						//Who wins?
+						if (playerDeck.getDoubleDown() == true) {
+							checkHandDouble(playerDeck);
+						}
+						
+						playerDeck.setWinner(checkHand(playerDeck, dealerDeck));
+						playerMoney = handleMoney(playerDeck.getWinner(), playerMoney, playerBet);
+						monies.set(0, playerMoney);
+					}
+				}
+			}
+			
+			
+			for (int i = 1; i < decks.size(); i++) {
+				if (decks.get(i).deckSize() > 0) {
+					decks.get(i).moveAllToDeck(mainDeck);
+				}
+			}
+			
+			dealerDeck.resetOptions();
+			
+			decks.set(0, mainDeck);
+			decks.set(5, dealerDeck);
+			System.out.println("End of Hand");
+
+		}	
+		
 
 		private static void checkHandDouble(Deck pDeck) {
 			System.out.println("You double down card was " + pDeck.getCard(pDeck.deckSize()-1).toString());

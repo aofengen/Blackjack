@@ -12,6 +12,7 @@ public class blackjack {
 	}
 	
 		public static void game(Scanner sc) {
+			
 			//Create and populate deck
 			Deck mainDeck = new Deck();
 			mainDeck.createFullDeck();
@@ -38,15 +39,94 @@ public class blackjack {
 			//create list to hold money items
 			ArrayList<Double> monies = new ArrayList<Double>();
 			
-			double playerMoney = 100.00;
-			
-			//variables to be used later
-			Options options = new Options("", false, false, false, false, false, false);
-
+			monies.add(0, 100.00);
 			System.out.println("Welcome to the game!");
 			
-			//playerTurn(decks, monies, options, sc);
+			while (monies.get(0) > 0) {
+			
+			playerTurn(decks, monies, sc);
+			//dealerTurn(decks, monies, sc);
+			
+				//show dealer cards
+				double playerMoney = monies.get(0);
+				double playerBet = monies.get(1);
+			
+				playerDeck = decks.get(1);
+				dealerDeck = decks.get(5);
+			
+				System.out.println("Dealer Cards:" + dealerDeck.toString());
+				
+				//display total for dealer
+				System.out.println("Dealer's hand is valued at: " + dealerDeck.cardsValue());
+				
+				//dealers draws at 16 and hits at 17
+				while (dealerDeck.cardsValue() < 17) {
+					if (playerDeck.getBlackjack() == true || dealerDeck.getBlackjack() == true) {
+						break;
+					}
+					dealerDeck.draw(mainDeck);
+					System.out.println("Dealer draws :" + dealerDeck.getCard(dealerDeck.deckSize()-1).toString());
+					
+					//display total for dealer
+					System.out.println("Dealer's hand is valued at: " + dealerDeck.cardsValue());
+					if (dealerDeck.cardsValue() > 21) {
+						System.out.println("Dealer Busts!");
+						dealerDeck.setBust(true);
+					}
+				}
+					
+				//see who won
+				
+				for (int i = 1; i < 5; i++) {	
+					//Did dealer bust?
+					if (decks.get(i).deckSize() > 0) {
+						playerDeck = decks.get(i);
+						if (playerDeck.getBust() == true) {
+							playerMoney = handleMoney(playerDeck.getWinner(), playerMoney, playerBet);
+							monies.set(0, playerMoney);
+						} else if (dealerDeck.getBust() == true) {
+							if (playerDeck.getDoubleDown()) {
+								checkHandDouble(playerDeck);
+							}
+							
+							playerDeck.setWinner(checkHand(playerDeck, dealerDeck));
+							playerMoney = handleMoney(playerDeck.getWinner(), playerMoney, playerBet);
+							monies.set(0, playerMoney);
+						} else {
+							//Who wins?
+							if (playerDeck.getDoubleDown()) {
+								checkHandDouble(playerDeck);
+							}
+							
+							playerDeck.setWinner(checkHand(playerDeck, dealerDeck));
+							playerMoney = handleMoney(playerDeck.getWinner(), playerMoney, playerBet);
+							monies.set(0, playerMoney);
+						}
+					}
+				}
+				
+				
+				for (int i = 1; i < decks.size(); i++) {
+					if (decks.get(i).deckSize() > 0) {
+						decks.get(i).moveAllToDeck(mainDeck);
+					}
+				}
+				
+				dealerDeck.resetOptions();
+				
+				decks.set(0, mainDeck);
+				decks.set(5, dealerDeck);
+				System.out.println("End of Hand");
+
+			}
+			
+			System.out.println("You're out of money. Game Over!");
+			playAgain(sc);
+		}
+		
+		public static void playerTurn(ArrayList<Deck> decks, ArrayList<Double> monies, Scanner sc) {
 			//Game Loop
+			double playerMoney = monies.get(0);
 			//Every time player has a turn, run the loop once
 			while(playerMoney > 0) {
 				//play on
@@ -60,7 +140,7 @@ public class blackjack {
 				
 				
 				//populate list of money items
-				monies.add(0, playerMoney);
+				
 				monies.add(1, playerBet);
 				monies.add(2, splitBet1);
 				monies.add(3, splitBet2);
@@ -68,18 +148,27 @@ public class blackjack {
 				
 				System.out.println("You bet $" + playerBet);
 				
+				Deck mainDeck = decks.get(0);
 				//Start dealing
-				
-				playerDeck.draw(mainDeck);
-				dealerDeck.draw(mainDeck);
-				
-				playerDeck.draw(mainDeck);
-				dealerDeck.draw(mainDeck);
-				
+				for (int i = 1; i < 2; i++) {				
 
+				Deck playerDeck = decks.get(i);
+				Deck dealerDeck = decks.get(5);
+				
+				playerDeck.resetOptions();
+				
+				if (i == 1) {
+					playerDeck.draw(mainDeck);
+					dealerDeck.draw(mainDeck);
+				
+					playerDeck.draw(mainDeck);
+					dealerDeck.draw(mainDeck);
+				}
+				
+				decks.set(5, dealerDeck);
 				
 				while(true) {
-					if (options.getBust( )== true || options.getDoubleDown() == true) {
+					if (playerDeck.getSplit() != true && playerDeck.getBust() == true || playerDeck.getDoubleDown() == true) {
 						break;
 					}
 					System.out.println("Your hand: ");
@@ -92,22 +181,25 @@ public class blackjack {
 					//Check for blackjack if only 2 cards in hand
 					int numCards = playerDeck.deckSize();
 					
-					boolean playerBlackjack = Deck.checkBlackjack(playerDeck);
-					boolean dealerBlackjack = Deck.checkBlackjack(dealerDeck);
-					if (numCards == 2 && options.getChecked() == false) {
-						if (playerBlackjack == true && dealerBlackjack == true) {
+					playerDeck.setBlackjack(playerDeck.checkBlackjack());
+					dealerDeck.setBlackjack(dealerDeck.checkBlackjack());
+					
+					if (numCards == 2 && playerDeck.getChecked() == false) {
+						if (playerDeck.getBlackjack() == true && dealerDeck.getBlackjack() == true) {
 							System.out.println("Push");
-							options.setEndRound(endHand(mainDeck, playerDeck, dealerDeck));
 							break;
-						} else if (playerBlackjack == true) {
-							playerMoney = handleMoney("blackjack", playerMoney, playerBet);
-							options.setEndRound(endHand(mainDeck, playerDeck, dealerDeck));
+						} else if (playerDeck.getBlackjack() == true) {
+							playerDeck.setWinner("blackjack");
+							playerMoney = handleMoney(playerDeck.getWinner(), playerMoney, playerBet);
+							monies.set(0, playerMoney);
 							break;
-						} else if (dealerBlackjack == true){
+						} else if (dealerDeck.getBlackjack() == true){
 							System.out.println("Dealer Cards:" + dealerDeck.toString());
 							System.out.println("Dealer Blackjack!!!");
-							playerMoney = handleMoney("dealer", playerMoney, playerBet);
-							options.setEndRound(endHand(mainDeck, playerDeck, dealerDeck));
+							playerDeck.setWinner("dealer");
+
+							playerMoney = handleMoney(playerDeck.getWinner(), playerMoney, playerBet);
+							monies.set(0, playerMoney);
 							break;
 						} else {
 						//Display dealer hand
@@ -127,14 +219,14 @@ public class blackjack {
 									//bust if over 21
 									if(playerDeck.cardsValue() > 21) {
 										System.out.println("Bust. Currently valued at: " + playerDeck.cardsValue());
-										playerMoney = handleMoney("dealer", playerMoney, playerBet);
-										options.setEndRound(endHand(mainDeck, playerDeck, dealerDeck));
-										options.setBust(true);
+										playerDeck.setWinner("dealer");
+										playerDeck.setBust(true);
 									}
 									break;
 								case 2:
-									options.setChecked(true);
-									options.setStand(true);
+									decks.set(i, playerDeck);
+									playerDeck.setChecked(true);
+									playerDeck.setStand(true);
 									break;
 								case 3:
 									if (playerBet * 2 > playerMoney) {
@@ -143,269 +235,15 @@ public class blackjack {
 										System.out.println("Doubling Down");
 										playerDeck.draw(mainDeck);
 										System.out.println("Your card will be hidden until the end of the dealer's turn");
-										options.setDoubleDown(true);
-										playerBet += playerBet;
-										if(playerDeck.cardsValue() > 21) {
-											System.out.println("Bust. Currently valued at: " + playerDeck.cardsValue());
-											System.out.println("Your double down card was: " + playerDeck.getCard(playerDeck.deckSize()-1).toString());
-											playerMoney = handleMoney("dealer", playerMoney, playerBet);
-											options.setEndRound(endHand(mainDeck, playerDeck, dealerDeck));
-											options.setBust(true);
-										}
+										playerDeck.setDoubleDown(true);
+										monies.set(1, playerBet += playerBet);
 									}
 									break;
 								case 4:
 									if (!Deck.checkSplit(playerDeck)) {
-										System.out.println("Response not valid. " + options);
+										System.out.println("Response not valid. " + choices);
 									} else {
 										System.out.println("Splitting cards.");
-										if (splitDeck2.deckSize() > 0) {
-											
-											splitDeck3.splitDeck(playerDeck);
-											
-											//Get second cards for each hand
-											playerDeck.draw(mainDeck);
-											splitDeck3.draw(mainDeck);
-											
-											//add second bet
-											splitBet3 = playerBet;
-											
-											System.out.println("Your first hand is now: " + playerDeck.toString());
-											System.out.println("your fourth hand is: " + splitDeck3.toString());
-										} else if (splitDeck1.deckSize() > 0) {
-											
-											splitDeck2.splitDeck(playerDeck);
-											
-											//Get second cards for each hand
-											playerDeck.draw(mainDeck);
-											splitDeck2.draw(mainDeck);
-											
-											//add second bet
-											splitBet2 = playerBet;
-
-											System.out.println("Your first hand is now: " + playerDeck.toString());
-											System.out.println("your third hand is: " + splitDeck2.toString());
-											
-										} else {										
-											splitDeck1.splitDeck(playerDeck);
-											
-											//Get second cards for each hand
-											playerDeck.draw(mainDeck);
-											splitDeck1.draw(mainDeck);
-											
-											//add second bet
-											splitBet1 = playerBet;
-											options.setSplit(true);
-											System.out.println("Your first hand is now: " + playerDeck.toString());
-											System.out.println("your second hand is: " + splitDeck1.toString());
-										}
-									}
-									break;
-								default:
-									System.out.println("Response not valid. " + options);
-									break;
-							}
-						}
-					} else if (options.getStand() || options.getDoubleDown() || options.getBust()) {
-						break;
-						} else {
-						
-						System.out.println("Would you like to (1) hit or (2) stand?");
-						
-						response = sc.nextInt();
-						
-						if(response==1) {
-							playerDeck.draw(mainDeck);
-							System.out.println("You draw a: " + playerDeck.getCard(playerDeck.deckSize()-1).toString());
-							//bust if over 21
-							if(playerDeck.cardsValue() > 21) {
-								System.out.println("Bust. Currently valued at: " + playerDeck.cardsValue());
-								playerMoney = handleMoney("dealer", playerMoney, playerBet);
-								options.setBust(true);
-								break;
-							}
-						}
-						if(response==2) {
-							break;
-						}
-						
-					}
-				}
-				
-				//show dealer cards
-				if (options.getEndRound() == false && options.getBust() != true) {
-					System.out.println("Dealer Cards:" + dealerDeck.toString());
-					
-					//display total for dealer
-					System.out.println("Dealer's hand is valued at: " + dealerDeck.cardsValue());
-					
-					//see if dealer's cards are better than player's cards
-					if((dealerDeck.cardsValue() >= 17)) {
-						if (options.getDoubleDown()) {
-							checkHandDouble(playerDeck);
-						}
-						options.setWinner(checkHand(playerDeck, dealerDeck));
-						playerMoney = handleMoney(options.getWinner(), playerMoney, playerBet);
-						options.setEndRound(endHand(mainDeck, playerDeck, dealerDeck));
-					} else {
-					//dealers draws at 16 and hits at 17
-						while ((dealerDeck.cardsValue() < 17) && options.getEndRound()) {
-							dealerDeck.draw(mainDeck);
-							System.out.println("Dealer draws :" + dealerDeck.getCard(dealerDeck.deckSize()-1).toString());
-							
-							//display total for dealer
-							System.out.println("Dealer's hand is valued at: " + dealerDeck.cardsValue());
-						}
-
-						//Did dealer bust?
-						if((dealerDeck.cardsValue() > 21) && options.getEndRound()) {
-							if (options.getDoubleDown()) {
-								checkHandDouble(playerDeck);
-							}
-							System.out.println("Dealer Busts");
-							playerMoney = handleMoney("player", playerMoney, playerBet);
-							options.setEndRound(endHand(mainDeck, playerDeck, dealerDeck));
-						} else {
-						//Who wins?
-							if (options.getDoubleDown()) {
-								checkHandDouble(playerDeck);
-							}
-						options.setWinner(checkHand(playerDeck, dealerDeck));
-						playerMoney = handleMoney(options.getWinner(), playerMoney, playerBet);
-						options.setEndRound(endHand(mainDeck, playerDeck, dealerDeck));
-						}
-					}
-				} else {
-					options.setEndRound(endHand(mainDeck, playerDeck, dealerDeck));
-					}
-				
-				if (splitDeck1.deckSize() > 0) {
-					splitDeck1.moveAllToDeck(mainDeck);
-				}
-				if (splitDeck2.deckSize() > 0) {
-					splitDeck2.moveAllToDeck(mainDeck);
-				}
-				if (splitDeck3.deckSize() > 0) {
-					splitDeck3.moveAllToDeck(mainDeck);
-				}
-			}
-			
-			System.out.println("You're out of money. Game Over!");
-			playAgain(sc);
-		}
-		
-//		public static void playerTurn(ArrayList<Deck> dList, Options options, ArrayList<Double> mList, Scanner sc) {
-//			//Game Loop
-//			//Every time player has a turn, run the loop once
-//			while(playerMoney > 0) {
-//				//play on
-//				//Take players bet
-//				double playerBet = getBet(playerMoney, sc);
-//				
-//				//create extra bets in case of splits
-//				double splitBet1 = playerBet;
-//				double splitBet2 = playerBet;
-//				double splitBet3 = playerBet;
-//				
-//				
-//				//populate list of money items
-//				monies.add(0, playerMoney);
-//				monies.add(1, playerBet);
-//				monies.add(2, splitBet1);
-//				monies.add(3, splitBet2);
-//				monies.add(4, splitBet3);
-//				
-//				System.out.println("You bet $" + playerBet);
-//				
-//				//Start dealing
-//				
-//				playerDeck.draw(mainDeck);
-//				dealerDeck.draw(mainDeck);
-//				
-//				playerDeck.draw(mainDeck);
-//				dealerDeck.draw(mainDeck);
-//				
-//				while(true) {
-//					if (bust == true || doubleDown == true) {
-//						break;
-//					}
-//					System.out.println("Your hand: ");
-//					System.out.println(playerDeck.toString());
-//					System.out.println("Your hand is: " + playerDeck.cardsValue());
-//					
-//					//make variable for later
-//					int response;
-//					
-//					//Check for blackjack if only 2 cards in hand
-//					int numCards = playerDeck.deckSize();
-//					
-//					boolean playerBlackjack = Deck.checkBlackjack(playerDeck);
-//					boolean dealerBlackjack = Deck.checkBlackjack(dealerDeck);
-//					if (numCards == 2 && checked == false) {
-//						if (playerBlackjack == true && dealerBlackjack == true) {
-//							System.out.println("Push");
-//							endRound = endHand(mainDeck, playerDeck, dealerDeck);
-//							break;
-//						} else if (playerBlackjack == true) {
-//							playerMoney = handleMoney("blackjack", playerMoney, playerBet);
-//							endRound = endHand(mainDeck, playerDeck, dealerDeck);
-//							break;
-//						} else if (dealerBlackjack == true){
-//							System.out.println("Dealer Cards:" + dealerDeck.toString());
-//							System.out.println("Dealer Blackjack!!!");
-//							playerMoney = handleMoney("dealer", playerMoney, playerBet);
-//							endRound = endHand(mainDeck, playerDeck, dealerDeck);
-//							break;
-//						} else {
-//						//Display dealer hand
-//						System.out.println("No blackjack!");
-//						System.out.println("Dealer hand: " + dealerDeck.getCard(0).toString() + " and [hidden]");
-//						
-//						String options = playerOptions(playerDeck, numCards);
-//						
-//						//What does the player want to do?
-//							System.out.println(options);
-//							response = sc.nextInt();
-//							
-//							switch(response) {
-//								case 1:
-//									playerDeck.draw(mainDeck);
-//									System.out.println("You draw a: " + playerDeck.getCard(playerDeck.deckSize()-1).toString());
-//									//bust if over 21
-//									if(playerDeck.cardsValue() > 21) {
-//										System.out.println("Bust. Currently valued at: " + playerDeck.cardsValue());
-//										playerMoney = handleMoney("dealer", playerMoney, playerBet);
-//										endRound = endHand(mainDeck, playerDeck, dealerDeck);
-//										bust = true;
-//									}
-//									break;
-//								case 2:
-//									checked = true;
-//									stand = true;
-//									break;
-//								case 3:
-//									if (playerBet * 2 > playerMoney) {
-//										System.out.println("Not enough money to double down.");
-//									} else {
-//										System.out.println("Doubling Down");
-//										playerDeck.draw(mainDeck);
-//										System.out.println("Your card will be hidden until the end of the dealer's turn");
-//										doubleDown = true;
-//										playerBet += playerBet;
-//										if(playerDeck.cardsValue() > 21) {
-//											System.out.println("Bust. Currently valued at: " + playerDeck.cardsValue());
-//											System.out.println("Your double down card was: " + playerDeck.getCard(playerDeck.deckSize()-1).toString());
-//											playerMoney = handleMoney("dealer", playerMoney, playerBet);
-//											endRound = endHand(mainDeck, playerDeck, dealerDeck);
-//											bust = true;
-//										}
-//									}
-//									break;
-//								case 4:
-//									if (!Deck.checkSplit(playerDeck)) {
-//										System.out.println("Response not valid. " + options);
-//									} else {
-//										System.out.println("Splitting cards.");
 //										if (splitDeck2.deckSize() > 0) {
 //											
 //											splitDeck3.splitDeck(playerDeck);
@@ -442,42 +280,51 @@ public class blackjack {
 //											
 //											//add second bet
 //											splitBet1 = playerBet;
-//											split = true;
+//											options.setSplit(true);
 //											System.out.println("Your first hand is now: " + playerDeck.toString());
 //											System.out.println("your second hand is: " + splitDeck1.toString());
 //										}
-//									}
-//									break;
-//								default:
-//									System.out.println("Response not valid. " + options);
-//									break;
-//							}
-//						}
-//					} else if (stand == true || doubleDown == true || bust == true) {
-//						break;
-//						} else {
-//						
-//						System.out.println("Would you like to (1) hit or (2) stand?");
-//						
-//						response = sc.nextInt();
-//						
-//						if(response==1) {
-//							playerDeck.draw(mainDeck);
-//							System.out.println("You draw a: " + playerDeck.getCard(playerDeck.deckSize()-1).toString());
-//							//bust if over 21
-//							if(playerDeck.cardsValue() > 21) {
-//								System.out.println("Bust. Currently valued at: " + playerDeck.cardsValue());
-//								playerMoney = handleMoney("dealer", playerMoney, playerBet);
-//								bust = true;
-//								break;
-//							}
-//						}
-//						if(response==2) {
-//							break;
-//						}
-//						
-//					}
-//				}
+									}
+									break;
+								default:
+									System.out.println("Response not valid. " + choices);
+									break;
+							}
+						}
+					} else if (playerDeck.getStand() == true || playerDeck.getDoubleDown() == true || playerDeck.getBust() == true) {
+						break;
+						} else {
+						
+						System.out.println("Would you like to (1) hit or (2) stand?");
+						
+						response = sc.nextInt();
+						
+						if(response==1) {
+							playerDeck.draw(mainDeck);
+							System.out.println("You draw a: " + playerDeck.getCard(playerDeck.deckSize()-1).toString());
+							//bust if over 21
+							if(playerDeck.cardsValue() > 21) {
+								System.out.println("Bust. Currently valued at: " + playerDeck.cardsValue());
+								playerDeck.setWinner("dealer");
+								playerDeck.setBust(true);
+								break;
+							}
+						}
+						if(response==2) {
+							decks.set(i, playerDeck);
+							playerDeck.setStand(true);
+							break;
+						}
+						
+					}
+				}
+			}
+				break;
+		}
+	}
+		
+//		public static void dealerTurn(ArrayList<Deck> dList, ArrayList<Double> mList, Scanner sc) {
+//			
 //		}
 
 		private static void checkHandDouble(Deck pDeck) {
@@ -509,7 +356,7 @@ public class blackjack {
 					validBet = true;
 					return pBet;
 				} else if (pBet == 0) {
-					System.out.println("You must bet ata least 1 dollar.");
+					System.out.println("You must bet at least 1 dollar.");
 				} else {
 					System.out.println("You cannot bet more money than you currently have.");
 				}
@@ -517,12 +364,10 @@ public class blackjack {
 			return pBet;
 		}
 
-		private static boolean endHand(Deck mainDeck, Deck pDeck, Deck dDeck) {
-			pDeck.moveAllToDeck(mainDeck);
-			dDeck.moveAllToDeck(mainDeck);
-			System.out.println("End of Hand");
-			return true;
-		}
+//		private static boolean endHand(Deck mainDeck, Deck pDeck) {
+//
+//			return true;
+//		}
 
 		public static void playAgain(Scanner sc) {
 			boolean gameOver = false;
@@ -546,26 +391,31 @@ public class blackjack {
 		
 		public static String checkHand(Deck pD, Deck dD) {
 			String winner = "";
-			int x = pD.cardsValue();
-			int y = dD.cardsValue();
 			
-			if (x == y) {
-				winner = "push";
-				System.out.println("push");
-			} else if (x > y) {
-				winner = "player";
-				System.out.println("player");
-			} else {
+			if (pD.getBust() == true) {
 				winner = "dealer";
-				System.out.println("dealer");
+			} else if (dD.getBust() == true) {
+				winner = "player";
+			} else {
+				int x = pD.cardsValue();
+				int y = dD.cardsValue();
+				
+				if(x == y) {
+					winner = "push";
+				} else if (x > y) {
+					winner = "player";
+				} else {
+					winner = "dealer";
+				}
 			}
 			return winner;
 		}
 		
 		private static double handleMoney(String win, double pM, double pB) {
+			
 			switch (win) {
 				case "blackjack":
-					System.out.println("Blackjack!!!");
+					System.out.println("BLACKJACK!!!");
 					pM += pB * 3/2;
 					break;
 				case "player":

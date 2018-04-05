@@ -6,10 +6,20 @@ import java.util.Random;
 public class Deck {
 	
 	private ArrayList<Card> cards;
+	String handWinner;
+	boolean doubleDown, split, bust, checked, stand, blackjack; //endRound,
 	
 	public Deck() {
 		//create new deck
 		this.cards = new ArrayList<Card>();
+		this.handWinner = "";
+		this.doubleDown = false;
+		this.split = false;
+		//this.endRound = false;
+		this.bust = false;
+		this.checked = false;
+		this.stand = false;
+		this.blackjack = false;
 	}
 	
 	public void createFullDeck() {
@@ -20,6 +30,82 @@ public class Deck {
 			}
 		}
 	}
+	
+	//methods to recall object values
+		public String getWinner() {
+			return this.handWinner;
+		}
+		
+		public boolean getDoubleDown() {
+			return this.doubleDown;
+		}
+		
+		public boolean getSplit() {
+			return this.split;
+		}		
+		
+//		public boolean getEndRound() {
+//			return this.endRound;
+//		}
+//		
+		public boolean getBust() {
+			return this.bust;
+		}
+		
+		public boolean getChecked() {
+			return this.checked;
+		}
+		
+		public boolean getStand() {
+			return this.stand;
+		}
+		public boolean getBlackjack() {
+			return this.blackjack;
+		}
+		
+		//methods to set object values
+		
+		public void setWinner(String hW) {
+			this.handWinner = hW;
+		}
+		
+		public void setDoubleDown(boolean dD) {
+			this.doubleDown = dD;
+		}
+
+		public void setSplit(boolean sp) {
+			this.split = sp;
+		}
+
+//		public void setEndRound(boolean eR) {
+//			this.endRound = eR;
+//		}
+		
+		public void setBust(boolean bu) {
+			this.bust = bu;
+		}
+
+		public void setChecked(boolean c) {
+			this.doubleDown = c;
+		}
+		
+		public void setStand(boolean st) {
+			this.doubleDown = st;
+		}
+		
+		public void setBlackjack(boolean bl) {
+			this.blackjack = bl;
+		}
+		
+		public void resetOptions() {
+			this.handWinner = "";
+			this.doubleDown = false;
+			this.split = false;
+			//this.endRound = false;
+			this.bust = false;
+			this.checked = false;
+			this.stand = false;
+		}
 	
 	public void shuffle() {
 		ArrayList<Card> tmpDeck = new ArrayList<Card>();
@@ -113,10 +199,10 @@ public class Deck {
 		}
 	}
 	
-	public static boolean checkBlackjack(Deck deck) {
+	public boolean checkBlackjack() {
 		boolean blackjack;
-		String x = deck.getCard(0).getValue().toString();
-		String y = deck.getCard(1).getValue().toString();
+		String x = this.getCard(0).getValue().toString();
+		String y = this.getCard(1).getValue().toString();
 		if (x.equals("ACE") && (y.equals("TEN") || y.equals("JACK") || y.equals("QUEEN") || y.equals("KING"))) {
 			blackjack = true;
 		} else if (y.equals("ACE") && (x.equals("TEN") || x.equals("JACK") || x.equals("QUEEN") || x.equals("KING"))) {

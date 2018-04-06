@@ -134,10 +134,11 @@ public class blackjack {
 						//Check for blackjack if only 2 cards in hand
 						int numCards = playerDeck.deckSize();
 						
-						playerDeck.setBlackjack(playerDeck.checkBlackjack());
-						dealerDeck.setBlackjack(dealerDeck.checkBlackjack());
-						
 						if (numCards == 2 && playerDeck.getChecked() == false) {
+						
+							playerDeck.setBlackjack(playerDeck.checkBlackjack());
+							dealerDeck.setBlackjack(dealerDeck.checkBlackjack());
+						
 							if (playerDeck.getBlackjack() == true && dealerDeck.getBlackjack() == true) {
 								System.out.println("Push");
 								break;
@@ -246,6 +247,11 @@ public class blackjack {
 			break;
 		}
 	}
+
+	private static void checkBlackjack(Deck playerDeck, Deck dealerDeck) {
+			// TODO Auto-generated method stub
+			
+		}
 
 	public static void dealerTurn(ArrayList<Deck> decks, ArrayList<Double> monies, Scanner sc) {
 		//show dealer cards

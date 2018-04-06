@@ -91,6 +91,9 @@ public class blackjack {
 						dealerDeck.draw(mainDeck);
 						
 						decks.set(5, dealerDeck);
+					} else {
+						Deck firstHand = decks.get(1);
+						playerDeck.setNumHands(firstHand.getNumHands());
 					}
 					
 					if (playerDeck.deckSize() < 1) {
@@ -146,6 +149,8 @@ public class blackjack {
 							} else if (dealerDeck.getBlackjack() == true){
 								System.out.println("Dealer Blackjack!!!");
 								playerDeck.setWinner("dealer");
+								playerMoney = handleMoney(playerDeck.getWinner(), playerMoney, playerBet);
+								monies.set(0, playerMoney);
 								break;
 							} else {
 							//Display dealer hand
@@ -189,11 +194,12 @@ public class blackjack {
 										break;
 									case 4:
 										//player splits
+										int numHands = playerDeck.getNumHands() + 1;
 										if (!Deck.checkSplit(playerDeck)) {
 											System.out.println("Response not valid. " + choices);
 										} else if (i == 4) {
 											System.out.println("Maximum number of splits reached.");
-										} else if (playerMoney < playerBet * 2) {
+										} else if (playerMoney < playerBet * numHands) {
 											System.out.println("Not enough money to split!");
 										} else {
 											System.out.println("Splitting cards.");
@@ -257,7 +263,7 @@ public class blackjack {
 		
 		//dealers draws at 16 and hits at 17
 		while (dealerDeck.cardsValue() < 17) {
-			if (playerDeck.getBlackjack() == true || playerDeck.getBust() == true || dealerDeck.getBlackjack() == true) {
+			if (playerDeck.getSplit() != true && (playerDeck.getBlackjack() == true || playerDeck.getBust() == true || dealerDeck.getBlackjack() == true)) {
 				break;
 			}
 			dealerDeck.draw(mainDeck);
@@ -359,19 +365,21 @@ public class blackjack {
 	public static void splitHand(ArrayList<Deck> decks, Deck playerDeck, int i) {
 		Deck mainDeck = decks.get(0);
 		Deck sDeck = new Deck();											
-		sDeck.splitDeck(playerDeck);
+		
 		
 		if (playerDeck.cardValue(0) == "ACE" && playerDeck.cardValue(1) == "ACE") {
 			System.out.println("When splitting aces, you only get one card per hand");
 			playerDeck.setSplitAces(true);
 			sDeck.setSplitAces(true);
 		}
-			
+		
+		sDeck.splitDeck(playerDeck);
 		//Get second cards for each hand
 		playerDeck.draw(mainDeck);
 		sDeck.draw(mainDeck);
 		
 		playerDeck.setSplit(true);
+		playerDeck.addHand();
 		System.out.println("Your current hand is now: " + playerDeck.toString());
 		System.out.println("Your split hand is: " + sDeck.toString());
 	
@@ -391,6 +399,7 @@ public class blackjack {
 			int response = sc.nextInt();
 			
 			if (response == 1) {
+				System.out.println("How about you just give me the money, I kick you in the nuts, and we call it a day?");
 				game(sc);
 			} else if (response == 2) {
 				sc.close();
@@ -440,6 +449,8 @@ public class blackjack {
 				System.out.println("Dealer beats you!");
 				pM -= pB;
 				break;
+			case "push":
+				System.out.println("Push!");
 			default:
 				break;
 		}

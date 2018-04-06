@@ -8,6 +8,7 @@ public class Deck {
 	private ArrayList<Card> cards;
 	String handWinner;
 	boolean doubleDown, split, splitAces, bust, checked, stand, blackjack;
+	int numHands;
 	
 	public Deck() {
 		//create new deck
@@ -16,6 +17,7 @@ public class Deck {
 		this.doubleDown = false;
 		this.split = false;
 		this.splitAces = false;
+		this.numHands = 1;
 		this.bust = false;
 		this.checked = false;
 		this.stand = false;
@@ -23,10 +25,12 @@ public class Deck {
 	}
 	
 	public void createFullDeck() {
-		//fill deck with cards
-		for(Suit cardSuit : Suit.values()) {
-			for(Value cardValue : Value.values()) {
-				this.cards.add(new Card(cardSuit, cardValue));
+		//create six deck shoe
+		for (int i = 0; i < 6; i++) { 
+			for(Suit cardSuit : Suit.values()) {
+				for(Value cardValue : Value.values()) {
+					this.cards.add(new Card(cardSuit, cardValue));
+				}
 			}
 		}
 	}
@@ -48,6 +52,10 @@ public class Deck {
 		return this.splitAces;
 	}
 	
+	public int getNumHands() {
+		return this.numHands;
+	}
+	
 	public boolean getBust() {
 		return this.bust;
 	}
@@ -59,6 +67,7 @@ public class Deck {
 	public boolean getStand() {
 		return this.stand;
 	}
+	
 	public boolean getBlackjack() {
 		return this.blackjack;
 	}
@@ -79,6 +88,14 @@ public class Deck {
 
 	public void setSplitAces(boolean sA) {
 		this.splitAces = sA;
+	}
+	
+	public void setNumHands(int i) {
+		this.numHands = i;
+	}
+	
+	public void addHand() {
+		this.numHands += 1;
 	}
 
 	public void setBust(boolean bu) {

@@ -235,6 +235,11 @@ public class Deck {
 		return blackjack;
 	}
 	
+	public static void checkHandDouble(Deck pDeck, Deck dDeck) {
+		System.out.println("You double down card is " + pDeck.getCard(pDeck.deckSize()-1).toString());
+		System.out.println("Your total is " + pDeck.cardsValue());
+	}
+	
 	public static boolean checkSplit(Deck pDeck) {
 		boolean split;
 		Value x = pDeck.getCard(0).getValue();
@@ -251,5 +256,35 @@ public class Deck {
 	public void splitDeck(Deck pDeck) {
 		this.addCard(pDeck.getCard(1));
 		pDeck.removeCard(1);
+	}
+	
+	public static void splitHand(ArrayList<Deck> decks, Deck playerDeck, int i) {
+		Deck mainDeck = decks.get(0);
+		Deck sDeck = new Deck();											
+		
+		
+		if (playerDeck.cardValue(0) == "ACE" && playerDeck.cardValue(1) == "ACE") {
+			System.out.println("When splitting aces, you only get one card per hand");
+			playerDeck.setSplitAces(true);
+			sDeck.setSplitAces(true);
+		}
+		
+		sDeck.splitDeck(playerDeck);
+		//Get second cards for each hand
+		playerDeck.draw(mainDeck);
+		sDeck.draw(mainDeck);
+		
+		playerDeck.setSplit(true);
+		playerDeck.addHand();
+		System.out.println("Your current hand is now: " + playerDeck.toString());
+		System.out.println("Your split hand is: " + sDeck.toString());
+	
+		//Add split deck to arrayList for use in next round
+		for (int j = 1; j <= 3; j++) {
+			if (decks.get(i+j).deckSize() < 1) {
+				decks.set(i+j, sDeck);
+				break;
+			}
+		}
 	}
 }

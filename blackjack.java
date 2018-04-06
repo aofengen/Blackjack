@@ -8,6 +8,7 @@ public class BlackJack {
 		System.out.println("Welcome to Blackjack!");
 		Scanner sc = new Scanner(System.in);
 		Game.game(sc);
+		sc.close();
 	}
 }
 	

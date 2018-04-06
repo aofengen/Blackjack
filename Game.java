@@ -20,6 +20,9 @@ public class Game {
 		Deck splitDeck2 = new Deck();
 		Deck splitDeck3 = new Deck();
 		
+		//reset number of hands in current round to 1
+		playerDeck.setNumHands(1);
+		
 		//create an array to hold all decks
 		ArrayList<Deck> decks = new ArrayList<Deck>();
 		decks.add(0, mainDeck);
@@ -406,7 +409,6 @@ public class Game {
 				System.out.println("How about you just give me the money, I kick you in the nuts, and we call it a day?");
 				game(sc);
 			} else if (response == 2) {
-				sc.close();
 				System.out.println("Thanks for playing! See you next time!");
 				gameOver = true;
 			} else {

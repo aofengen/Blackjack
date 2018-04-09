@@ -1,4 +1,4 @@
-package main;
+package main.java.blackjack;
 
 import java.util.ArrayList;
 import java.util.Scanner;

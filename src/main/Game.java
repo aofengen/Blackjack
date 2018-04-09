@@ -1,9 +1,17 @@
-package Blackjack;
+package main;
 
 import java.util.ArrayList;
 import java.util.Scanner;
 
 public class Game {
+	
+	public static void main(String[] args) {
+		System.out.println("Welcome to Blackjack!");
+		Scanner sc = new Scanner(System.in);
+		Game.game(sc);
+		sc.close();
+	}
+	
 	public static void game(Scanner sc) {
 		
 		//Create and populate deck

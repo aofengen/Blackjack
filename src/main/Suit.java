@@ -1,4 +1,4 @@
-package Blackjack;
+package main;
 
 public enum Suit {
 	CLUB, DIAMOND, HEART, SPADE

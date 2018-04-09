@@ -1,4 +1,4 @@
-package Blackjack;
+package main;
 
 public class Card {
 	private Suit suit;

@@ -266,7 +266,7 @@ public class Game {
 		//display total for dealer
 		System.out.println("Dealer's hand is valued at: " + dealerDeck.cardsValue());
 		
-		//dealers draws at 16 and hits at 17
+		//dealers hits at 16 and stands 17
 		while (dealerDeck.cardsValue() < 17) {
 			if (playerDeck.getSplit() != true && (playerDeck.getBlackjack() == true || playerDeck.getBust() == true || dealerDeck.getBlackjack() == true)) {
 				break;

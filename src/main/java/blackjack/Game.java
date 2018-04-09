@@ -4,7 +4,7 @@ import java.util.ArrayList;
 import java.util.Scanner;
 
 public class Game {
-	
+	//comment to allow commit - will be deleted later
 	public static void main(String[] args) {
 		System.out.println("Welcome to Blackjack!");
 		Scanner sc = new Scanner(System.in);

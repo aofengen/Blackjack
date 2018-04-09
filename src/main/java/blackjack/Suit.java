@@ -1,4 +1,4 @@
-package main.java.blackjack;
+package blackjack;
 
 public enum Suit {
 	CLUB, DIAMOND, HEART, SPADE

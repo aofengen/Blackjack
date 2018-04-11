@@ -216,18 +216,16 @@ public class Deck {
 		return x;
 	}
 	
-	public JSONObject toJSON() throws Exception {
-		JSONObject object = new JSONObject();
-		int i = 1;
+	public JSONArray toJSON() throws Exception {
+		JSONArray array = new JSONArray();
     	while(this.deckSize() > 0) {
     		JSONObject childObject = new JSONObject();
     		childObject.put("suit", this.cardSuit(0));
     		childObject.put("value", this.cardValue(0));
     		this.removeCard(0);
-    		object.put("card" + i, childObject);
-    		i++;
+    		array.put(childObject);
     	}
-		return object;
+		return array;
 	}
 	
 	public void moveAllToDeck(Deck moveTo) {

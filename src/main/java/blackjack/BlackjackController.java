@@ -1,11 +1,11 @@
 package blackjack;
 
+
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import org.json.*;
 
 @RestController
 public class BlackjackController {
@@ -35,13 +35,12 @@ public class BlackjackController {
     
     @CrossOrigin
     @GetMapping("/shuffle")
-	public JSONObject shuffle() throws Exception {
+	public String shuffle() throws Exception {
     	Deck newDeck = new Deck();
     	newDeck.createFullDeck();
     	newDeck.shuffle();
     	
-    	JSONObject obj = new JSONObject();
-    	obj = newDeck.toJSON();
+    	String obj = newDeck.toJSON().toString();
 		return obj;
 	}
 }

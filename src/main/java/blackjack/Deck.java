@@ -218,8 +218,14 @@ public class Deck {
 	
 	public JSONObject toJSON() throws Exception {
 		JSONObject object = new JSONObject();
-    	for (int i = 0; i < this.cards.size(); i++) {
-    		object.put(this.cardSuit(i), this.cardValue(i));
+		int i = 1;
+    	while(this.deckSize() > 0) {
+    		JSONObject childObject = new JSONObject();
+    		childObject.put("suit", this.cardSuit(0));
+    		childObject.put("value", this.cardValue(0));
+    		this.removeCard(0);
+    		object.put("card" + i, childObject);
+    		i++;
     	}
 		return object;
 	}

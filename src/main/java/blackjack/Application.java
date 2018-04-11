@@ -5,10 +5,11 @@ package blackjack;
 //import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
+//import org.springframework.web.servlet.config.annotation.CorsRegistration;
 //import org.springframework.context.ApplicationContext;
 //import org.springframework.context.annotation.Bean;
 //import org.springframework.web.servlet.config.annotation.CorsRegistry;
-import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
+//import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 
 
 @SpringBootApplication
@@ -20,13 +21,13 @@ public class Application {
     }
     
 //	@Bean
-    public class corsConfigurer implements WebMvcConfigurer {
-//        return new corsConfigurer() {
+//    public CorsRegistration corsConfigurer() {
+//        return new CorsRegistration() {
 //            public void addCorsMappings(CorsRegistry registry) {
 //                registry.addMapping("/shuffle").allowedOrigins("*");
 //            }
 //        };
-    }
+//    }
 
 //    @Bean
 //    public CommandLineRunner commandLineRunner(ApplicationContext ctx) {

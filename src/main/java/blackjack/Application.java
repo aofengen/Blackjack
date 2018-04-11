@@ -6,10 +6,10 @@ package blackjack;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 //import org.springframework.context.ApplicationContext;
-import org.springframework.context.annotation.Bean;
-import org.springframework.web.servlet.config.annotation.CorsRegistry;
+//import org.springframework.context.annotation.Bean;
+//import org.springframework.web.servlet.config.annotation.CorsRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
-import org.springframework.web.servlet.config.annotation.WebMvcConfigurerAdapter;
+
 
 @SpringBootApplication
 public class Application {
@@ -19,15 +19,13 @@ public class Application {
 		System.out.println("Server started.");
     }
     
-    @SuppressWarnings("deprecation")
-	@Bean
-    public WebMvcConfigurer corsConfigurer() {
-        return new WebMvcConfigurerAdapter() {
-            @Override
-            public void addCorsMappings(CorsRegistry registry) {
-                registry.addMapping("/shuffle").allowedOrigins("*");
-            }
-        };
+//	@Bean
+    public class corsConfigurer implements WebMvcConfigurer {
+//        return new corsConfigurer() {
+//            public void addCorsMappings(CorsRegistry registry) {
+//                registry.addMapping("/shuffle").allowedOrigins("*");
+//            }
+//        };
     }
 
 //    @Bean

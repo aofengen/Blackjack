@@ -4,6 +4,8 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import org.json.*;
+
 @RestController
 public class BlackjackController {
 
@@ -29,4 +31,15 @@ public class BlackjackController {
     	public String endGame() {
     	return "";
     }
+    
+    @GetMapping("/shuffle")
+	public JSONObject shuffle() throws Exception {
+    	Deck newDeck = new Deck();
+    	newDeck.createFullDeck();
+    	newDeck.shuffle();
+    	
+    	JSONObject obj = new JSONObject();
+    	obj = newDeck.toJSON();
+		return obj;
+	}
 }

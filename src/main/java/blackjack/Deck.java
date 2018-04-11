@@ -3,9 +3,11 @@ package blackjack;
 import java.util.ArrayList;
 import java.util.Random;
 
+import org.json.*;
+
 public class Deck {
 	
-	private ArrayList<Card> cards;
+	ArrayList<Card> cards;
 	String handWinner;
 	boolean doubleDown, split, splitAces, bust, checked, stand, blackjack;
 	int numHands;
@@ -207,6 +209,19 @@ public class Deck {
 	public String cardValue(int i) {
 		String x = this.getCard(i).getValue().toString();
 		return x;
+	}
+	
+	public String cardSuit(int i) {
+		String x = this.getCard(i).getSuit().toString();
+		return x;
+	}
+	
+	public JSONObject toJSON() throws Exception {
+		JSONObject object = new JSONObject();
+    	for (int i = 0; i < this.cards.size(); i++) {
+    		object.put(this.cardSuit(i), this.cardValue(i));
+    	}
+		return object;
 	}
 	
 	public void moveAllToDeck(Deck moveTo) {

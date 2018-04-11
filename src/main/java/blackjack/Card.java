@@ -1,8 +1,8 @@
 package blackjack;
 
 public class Card {
-	private Suit suit;
-	private Value value;
+	public Suit suit;
+	public Value value;
 	
 	public Card(Suit suit, Value value) {
 		this.value = value;

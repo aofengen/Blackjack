@@ -1,12 +1,14 @@
 package blackjack;
 
 
+import org.json.JSONArray;
+import org.json.JSONObject;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-
+@CrossOrigin
 @RestController
 public class BlackjackController {
 
@@ -18,29 +20,38 @@ public class BlackjackController {
         return message;
     }
     
-    @PostMapping("/") 
-    	public String startGame() {
-    		return "game";
-    	}
-    
     @GetMapping("/game") 
     	public String game() {
     		return "Greetings, Professor Falcon. Would you like to play a game?";
     	}
    
-    @PostMapping("/game")
-    	public String endGame() {
-    	return "";
+    @PostMapping("/signup")
+    public String signup() throws Exception {
+    	JSONObject message = new JSONObject();
+    	message.put("message", "signup request received");
+    	JSONArray array = new JSONArray();
+    	array.put(message);
+    	
+    	return array.toString();
     }
     
-    @CrossOrigin
+    @PostMapping("/login")
+    public String login() throws Exception {
+    	JSONObject message = new JSONObject();
+    	message.put("message", "login request received");
+    	JSONArray array = new JSONArray();
+    	array.put(message);
+    	
+    	return array.toString();
+    }
+    
     @GetMapping("/shuffle")
 	public String shuffle() throws Exception {
     	Deck newDeck = new Deck();
     	newDeck.createFullDeck();
     	newDeck.shuffle();
     	
-    	String obj = newDeck.toJSON().toString();
+    	String obj = newDeck.deckToJSON().toString();
 		return obj;
 	}
 }

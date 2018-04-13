@@ -216,7 +216,7 @@ public class Deck {
 		return x;
 	}
 	
-	public JSONArray toJSON() throws Exception {
+	public JSONArray deckToJSON() throws Exception {
 		JSONArray array = new JSONArray();
     	while(this.deckSize() > 0) {
     		JSONObject childObject = new JSONObject();

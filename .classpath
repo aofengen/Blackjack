@@ -234,5 +234,6 @@
 		</attributes>
 	</classpathentry>
 	<classpathentry kind="lib" path="C:/Program Files/Java/jre1.8.0_162/lib/java-json.jar"/>
+	<classpathentry kind="lib" path="C:/Program Files/Java/jre1.8.0_162/lib/postgresql-42.2.2.jar"/>
 	<classpathentry kind="output" path="bin/default"/>
 </classpath>

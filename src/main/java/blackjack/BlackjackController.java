@@ -6,7 +6,9 @@ import org.json.JSONObject;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
+
 
 @CrossOrigin
 @RestController
@@ -26,7 +28,18 @@ public class BlackjackController {
     	}
    
     @PostMapping("/signup")
-    public String signup() throws Exception {
+    public String signup(@RequestBody Signup signup) throws Exception {
+    	try {
+    		String name = signup.getName();
+    		String email = signup.getEmail();
+    		String username = signup.getUsername();
+    		String password = signup.getPassword();
+    		
+    		Database.insertIntoUserTable(name, email, username, password);
+    	}
+    	catch (Exception e) {
+    		System.out.println(e);
+    	}
     	JSONObject message = new JSONObject();
     	message.put("message", "signup request received");
     	JSONArray array = new JSONArray();
@@ -36,7 +49,15 @@ public class BlackjackController {
     }
     
     @PostMapping("/login")
-    public String login() throws Exception {
+    public String login(@RequestBody Login login) throws Exception {
+    	try {
+    		String email = login.getEmail();
+    		String password = login.getPassword();
+    		
+    		Database.checkUserTable(email, password);
+    	} catch (Exception e) {
+    		System.out.println(e);
+    	}
     	JSONObject message = new JSONObject();
     	message.put("message", "login request received");
     	JSONArray array = new JSONArray();

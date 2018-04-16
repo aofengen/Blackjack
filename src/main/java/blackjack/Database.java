@@ -11,10 +11,10 @@ import java.util.Date;
 public class Database {
 
 //	public static void main(String[] args) throws Exception {
-//		createUserTable();
-//		insertIntoUserTable("Aaron", "x@x.com", "aofengen", "xxxxxxxx");
+////		createUserTable();
+//		insertIntoUserTable("Test", "x@x.com", "aofengen", "xxxxxxxx");
 //	}
-	
+//	
 	public static void insertIntoUserTable(String name, String email, String username, String password) {
 		Connection c = null;
 		try {
@@ -88,5 +88,21 @@ public class Database {
 		}
 		System.out.println("Table created successfully");
 	}
+
+	public static void checkUserTable(String email, String password) {
+		Connection c = null;
+		Statement stmt = null;
+		try {
+			Class.forName("org.postgresql.Driver");
+			c = DriverManager.getConnection("jdbc:postgresql://localhost:5432/blackjack", "postgres", 
+				"9074dewberry1136");
+			System.out.println("Opened database successfully");	
+			
+			stmt = c.createStatement();
+			//String sql = "SELECT FROM USERS WHERE email =" +
+	} catch (Exception e) {
+		System.out.println(e);
+	}
+}
 
 }

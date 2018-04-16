@@ -26,7 +26,8 @@ public class BlackjackController {
     	public String game() {
     		return "Greetings, Professor Falcon. Would you like to play a game?";
     	}
-   
+    
+   @CrossOrigin
     @PostMapping("/signup")
     public String signup(@RequestBody Signup signup) throws Exception {
     	try {

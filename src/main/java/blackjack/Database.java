@@ -1,9 +1,11 @@
 package blackjack;
 
+import java.net.URISyntaxException;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
+import java.sql.SQLException;
 import java.sql.Statement;
 import java.sql.Timestamp;
 import java.util.Date;
@@ -19,8 +21,7 @@ public class Database {
 		Connection c = null;
 		try {
 			Class.forName("org.postgresql.Driver");
-			c = DriverManager.getConnection("jdbc:postgresql://localhost:5432/blackjack", "postgres", 
-				"9074dewberry1136");
+			c = getConnection();
 			c.setAutoCommit(false);
 			System.out.println("Opened database successfully");
 			
@@ -66,8 +67,7 @@ public class Database {
 		Statement stmt = null;
 		try {
 			Class.forName("org.postgresql.Driver");
-			c = DriverManager.getConnection("jdbc:postgresql://localhost:5432/blackjack", "postgres", 
-				"9074dewberry1136");
+			c = getConnection();
 			System.out.println("Opened database successfully");
 			
 			stmt = c.createStatement();
@@ -84,9 +84,13 @@ public class Database {
 			c.close();
 		} catch (Exception e) {
 			System.err.println( e.getClass().getName() + ": " + e.getMessage());
-			System.exit(0);
 		}
 		System.out.println("Table created successfully");
+	}
+
+	private static Connection getConnection() throws URISyntaxException, SQLException {
+	    String dbUrl = System.getenv("JDBC_DATABASE_URL");
+	    return DriverManager.getConnection(dbUrl);
 	}
 
 	public static void checkUserTable(String email, String password) {
@@ -94,8 +98,7 @@ public class Database {
 		Statement stmt = null;
 		try {
 			Class.forName("org.postgresql.Driver");
-			c = DriverManager.getConnection("jdbc:postgresql://localhost:5432/blackjack", "postgres", 
-				"9074dewberry1136");
+			c = getConnection();
 			System.out.println("Opened database successfully");	
 			
 			stmt = c.createStatement();

@@ -27,9 +27,15 @@ public class BlackjackController {
     		return "Greetings, Professor Falcon. Would you like to play a game?";
     	}
     
-   @CrossOrigin
+    @CrossOrigin
     @PostMapping("/signup")
     public String signup(@RequestBody Signup signup) throws Exception {
+	   try {
+		   Database.createUserTable();
+	   } catch (Exception e) {
+		   System.out.println(e);
+	   }
+	   
     	try {
     		String name = signup.getName();
     		String email = signup.getEmail();
@@ -51,6 +57,12 @@ public class BlackjackController {
     
     @PostMapping("/login")
     public String login(@RequestBody Login login) throws Exception {
+    	try {
+ 		   Database.createUserTable();
+ 	   } catch (Exception e) {
+ 		   System.out.println(e);
+ 	   }
+    	
     	try {
     		String email = login.getEmail();
     		String password = login.getPassword();

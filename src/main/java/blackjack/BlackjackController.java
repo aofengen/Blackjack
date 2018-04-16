@@ -2,7 +2,6 @@ package blackjack;
 
 
 import org.json.JSONArray;
-import org.json.JSONObject;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -36,21 +35,19 @@ public class BlackjackController {
 		   System.out.println(e);
 	   }
 	   
-    	try {
+	   JSONArray array = new JSONArray();
+    	
+	   try {
     		String name = signup.getName();
     		String email = signup.getEmail();
     		String username = signup.getUsername();
     		String password = signup.getPassword();
     		
-    		Database.insertIntoUserTable(name, email, username, password);
+    		array = Database.insertIntoUserTable(name, email, username, password);
     	}
     	catch (Exception e) {
     		System.out.println(e);
     	}
-    	JSONObject message = new JSONObject();
-    	message.put("message", "signup request received");
-    	JSONArray array = new JSONArray();
-    	array.put(message);
     	
     	return array.toString();
     }
@@ -63,18 +60,16 @@ public class BlackjackController {
  		   System.out.println(e);
  	   }
     	
+    	JSONArray array = new JSONArray();
+    	
     	try {
     		String email = login.getEmail();
     		String password = login.getPassword();
     		
-    		Database.checkUserTable(email, password);
+    		array = Database.checkUserTable(email, password);
     	} catch (Exception e) {
     		System.out.println(e);
     	}
-    	JSONObject message = new JSONObject();
-    	message.put("message", "login request received");
-    	JSONArray array = new JSONArray();
-    	array.put(message);
     	
     	return array.toString();
     }

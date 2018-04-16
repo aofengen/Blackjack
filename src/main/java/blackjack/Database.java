@@ -10,6 +10,9 @@ import java.sql.Statement;
 import java.sql.Timestamp;
 import java.util.Date;
 
+import org.json.JSONArray;
+import org.json.JSONObject;
+
 public class Database {
 
 	public static void main(String[] args) throws Exception {
@@ -43,22 +46,23 @@ public class Database {
 		}
 		System.out.println("Table created successfully");
 	}
-//	
-	public static void insertIntoUserTable(String name, String email, String username, String password) {
+
+	public static JSONArray insertIntoUserTable(String name, String email, String username, String password) {
 		Connection c = null;
+		int id = 0;
+		
+		Date timeC = new Date();
+		Date timeU = new Date();
+		
+		java.sql.Timestamp tC = new Timestamp(timeC.getTime());
+		java.sql.Timestamp tU = new Timestamp(timeU.getTime());
 		try {
 			Class.forName("org.postgresql.Driver");
 			c = getConnection();
 			c.setAutoCommit(false);
 			System.out.println("Opened database successfully");
-			
-			Date timeC = new Date();
-			Date timeU = new Date();
-			
-			java.sql.Timestamp tC = new Timestamp(timeC.getTime());
-			java.sql.Timestamp tU = new Timestamp(timeU.getTime());
-			
-			int id = 0;
+
+
 			Statement stmt = c.createStatement();
 			ResultSet rs = stmt.executeQuery("SELECT * FROM users WHERE id = ( SELECT MAX (id) FROM users );");
 			
@@ -74,7 +78,7 @@ public class Database {
 			pstmt.setInt(1, id);
 			pstmt.setString(2, name);
 			pstmt.setString(3, email);
-			pstmt.setString(4,  username);
+			pstmt.setString(4, username);
 			pstmt.setString(5, password);
 			pstmt.setTimestamp(6, tC);
 			pstmt.setTimestamp(7, tU);
@@ -89,31 +93,58 @@ public class Database {
 		}
 		System.out.println("Record added successfully");
 		
+		JSONObject obj = new JSONObject();
+		JSONArray array = new JSONArray();
+		
+		obj.put("id", id);
+		obj.put("name", name);
+		obj.put("email", email);
+		obj.put("username", username);
+		obj.put("password", "<hidden>");
+		obj.put("Record Created", tC);
+		obj.put("Record Updated", tU);
+		
+		array.put(obj);	
+		return array;
 	}
 
-	public static void checkUserTable(String email, String password) {
+	public static JSONArray checkUserTable(String email, String password) {
 		Connection c = null;
 		Statement stmt = null;
+		int id = 0;
+		String name = "";
 		try {
 			Class.forName("org.postgresql.Driver");
 			c = getConnection();
-			int id = 0;
 			System.out.println("Opened database successfully");	
 			stmt = c.createStatement();
-			ResultSet rs = stmt.executeQuery("SELECT * FROM USERS WHERE email = 'x@x.com' AND password = 'xxxxxxxx';");
+			ResultSet rs = stmt.executeQuery("SELECT * FROM USERS WHERE email = '" + email + "' AND password = '"
+					+ password + "';");
 			
 			if (rs.next()) {
-				id = rs.getInt(1) + 1;
-				System.out.println("Record Found! " + id);
+				System.out.println("Record Found! ");
+				id = rs.getInt(1);
+				name = rs.getString(2);
 			} else {
 				System.out.println("Record not found!");
 			}
-			System.out.println(id);
+
 			stmt.close();
 			c.close();
 	} catch (Exception e) {
 		System.out.println(e);
 	}
+    	JSONObject message = new JSONObject();
+    	JSONArray array = new JSONArray();
+    	
+    	message.put("id", id);
+    	message.put("email", email);
+    	message.put("name", name);
+    	message.put("password", "<hidden>");
+    	message.put("token", "token");
+    	array.put(message);
+    	
+		return array;
 }
 	
 	private static Connection getConnection() throws URISyntaxException, SQLException {

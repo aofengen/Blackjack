@@ -16,52 +16,7 @@ public class Database {
 ////		createUserTable();
 //		insertIntoUserTable("Test", "x@x.com", "aofengen", "xxxxxxxx");
 //	}
-//	
-	public static void insertIntoUserTable(String name, String email, String username, String password) {
-		Connection c = null;
-		try {
-			Class.forName("org.postgresql.Driver");
-			c = getConnection();
-			c.setAutoCommit(false);
-			System.out.println("Opened database successfully");
-			
-			Date timeC = new Date();
-			Date timeU = new Date();
-			
-			java.sql.Timestamp tC = new Timestamp(timeC.getTime());
-			java.sql.Timestamp tU = new Timestamp(timeU.getTime());
-			
-			int id = 0;
-			Statement stmt = c.createStatement();
-			ResultSet rs = stmt.executeQuery("SELECT * FROM users WHERE id = ( SELECT MAX (id) FROM users );");
-			
-			if (rs.next()) {
-				id = rs.getInt(1) + 1;
-			}
-			stmt.close();
-			
-			PreparedStatement pstmt = c.prepareStatement("INSERT INTO USERS (ID, NAME, EMAIL, USERNAME, PASSWORD, TIMECREATED, TIMEUPDATED)"
-	            + "VALUES (?, ?, ?, ?, ?, ?, ?)");
-			pstmt.setInt(1, id);
-			pstmt.setString(2, name);
-			pstmt.setString(3, email);
-			pstmt.setString(4,  username);
-			pstmt.setString(5, password);
-			pstmt.setTimestamp(6, tC);
-			pstmt.setTimestamp(7, tU);
-			
-			pstmt.executeUpdate();
-			pstmt.close();
-			c.commit();
-			c.close();
-		} catch (Exception e) {
-			System.err.println( e.getClass().getName() + ": " + e.getMessage());
-			System.exit(0);
-		}
-		System.out.println("Record added successfully");
-		
-	}
-
+	
 	public static void createUserTable() {
 		Connection c = null;
 		Statement stmt = null;
@@ -87,6 +42,53 @@ public class Database {
 		}
 		System.out.println("Table created successfully");
 	}
+//	
+	public static void insertIntoUserTable(String name, String email, String username, String password) {
+		Connection c = null;
+		try {
+			Class.forName("org.postgresql.Driver");
+			c = getConnection();
+			c.setAutoCommit(false);
+			System.out.println("Opened database successfully");
+			
+			Date timeC = new Date();
+			Date timeU = new Date();
+			
+			java.sql.Timestamp tC = new Timestamp(timeC.getTime());
+			java.sql.Timestamp tU = new Timestamp(timeU.getTime());
+			
+			int id = 0;
+			Statement stmt = c.createStatement();
+			ResultSet rs = stmt.executeQuery("SELECT * FROM users WHERE id = ( SELECT MAX (id) FROM users );");
+			
+			if (rs.next()) {
+				id = rs.getInt(1) + 1;
+			} else {
+				id = 1;
+			}
+			stmt.close();
+			
+			PreparedStatement pstmt = c.prepareStatement("INSERT INTO USERS (ID, NAME, EMAIL, USERNAME, PASSWORD, TIMECREATED, TIMEUPDATED)"
+	            + "VALUES (?, ?, ?, ?, ?, ?, ?)");
+			pstmt.setInt(1, id);
+			pstmt.setString(2, name);
+			pstmt.setString(3, email);
+			pstmt.setString(4,  username);
+			pstmt.setString(5, password);
+			pstmt.setTimestamp(6, tC);
+			pstmt.setTimestamp(7, tU);
+			
+			pstmt.executeUpdate();
+			pstmt.close();
+			c.commit();
+			c.close();
+		} catch (Exception e) {
+			System.err.println( e.getClass().getName() + ": " + e.getMessage());
+			System.exit(0);
+		}
+		System.out.println("Record added successfully");
+		
+	}
 
 	private static Connection getConnection() throws URISyntaxException, SQLException {
 	    String dbUrl = System.getenv("JDBC_DATABASE_URL");
@@ -101,8 +103,14 @@ public class Database {
 			c = getConnection();
 			System.out.println("Opened database successfully");	
 			
-			stmt = c.createStatement();
-			//String sql = "SELECT FROM USERS WHERE email =" +
+			ResultSet rs = stmt.executeQuery("SELECT FROM USERS WHERE email = '" + email + "' AND password = '" +
+							password + "';");
+			
+			if (rs.next()) {
+				System.out.println("Record Found!");
+			} else {
+				System.out.println("Record not found!");
+			}
 	} catch (Exception e) {
 		System.out.println(e);
 	}

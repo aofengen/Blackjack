@@ -103,6 +103,7 @@ public class Database {
 			c = getConnection();
 			System.out.println("Opened database successfully");	
 			
+			@SuppressWarnings("null")
 			ResultSet rs = stmt.executeQuery("SELECT FROM USERS WHERE email = '" + email + "' AND password = '" +
 							password + "';");
 			
@@ -111,6 +112,9 @@ public class Database {
 			} else {
 				System.out.println("Record not found!");
 			}
+			
+			stmt.close();
+			c.close();
 	} catch (Exception e) {
 		System.out.println(e);
 	}

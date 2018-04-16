@@ -108,7 +108,7 @@ public class Database {
 			} else {
 				System.out.println("Record not found!");
 			}
-			
+			System.out.println(id);
 			stmt.close();
 			c.close();
 	} catch (Exception e) {

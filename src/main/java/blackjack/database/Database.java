@@ -10,8 +10,10 @@ import java.sql.Statement;
 import java.sql.Timestamp;
 import java.util.Date;
 
-import org.json.JSONArray;
 import org.json.JSONObject;
+
+import com.auth0.jwt.JWT;
+import com.auth0.jwt.algorithms.Algorithm;
 
 public class Database {
 
@@ -47,7 +49,7 @@ public class Database {
 		System.out.println("Table created successfully");
 	}
 
-	public static JSONArray insertIntoUserTable(String name, String email, String username, String password) {
+	public static JSONObject insertIntoUserTable(String name, String email, String username, String password) {
 		Connection c = null;
 		int id = 0;
 		
@@ -73,18 +75,18 @@ public class Database {
 			}
 			stmt.close();
 			
-			PreparedStatement pstmt = c.prepareStatement("INSERT INTO USERS (ID, NAME, EMAIL, USERNAME, PASSWORD, TIMECREATED, TIMEUPDATED)"
-	            + "VALUES (?, ?, ?, ?, ?, ?, ?)");
-			pstmt.setInt(1, id);
-			pstmt.setString(2, name);
-			pstmt.setString(3, email);
-			pstmt.setString(4, username);
-			pstmt.setString(5, password);
-			pstmt.setTimestamp(6, tC);
-			pstmt.setTimestamp(7, tU);
-			
-			pstmt.executeUpdate();
-			pstmt.close();
+//			PreparedStatement pstmt = c.prepareStatement("INSERT INTO USERS (ID, NAME, EMAIL, USERNAME, PASSWORD, TIMECREATED, TIMEUPDATED)"
+//	            + "VALUES (?, ?, ?, ?, ?, ?, ?)");
+//			pstmt.setInt(1, id);
+//			pstmt.setString(2, name);
+//			pstmt.setString(3, email);
+//			pstmt.setString(4, username);
+//			pstmt.setString(5, password);
+//			pstmt.setTimestamp(6, tC);
+//			pstmt.setTimestamp(7, tU);
+//			
+//			pstmt.executeUpdate();
+//			pstmt.close();
 			c.commit();
 			c.close();
 		} catch (Exception e) {
@@ -94,7 +96,7 @@ public class Database {
 		System.out.println("Record added successfully");
 		
 		JSONObject obj = new JSONObject();
-		JSONArray array = new JSONArray();
+		String token = "";
 		
 		obj.put("id", id);
 		obj.put("name", name);
@@ -104,16 +106,27 @@ public class Database {
 		obj.put("Record Created", tC);
 		obj.put("Record Updated", tU);
 		
-		array.put(obj);	
-		return array;
+		try {
+			Algorithm alg = Algorithm.HMAC256("i_am_secret");
+			token = JWT.create().withIssuer("auth0").sign(alg);
+			
+			obj.put("token", token);
+		} catch (Exception e) {
+			System.out.println(e);
+		}
+		
+		return obj;
 	}
 
-	public static JSONArray checkUserTable(String email, String password) {
+	public static JSONObject checkUserTable(String email, String password) {
 		Connection c = null;
 		Statement stmt = null;
 		int id = 0;
 		String name = "";
+		String token = "";
+		JSONObject message = new JSONObject();
 		try {
+
 			Class.forName("org.postgresql.Driver");
 			c = getConnection();
 			System.out.println("Opened database successfully");	
@@ -125,8 +138,18 @@ public class Database {
 				System.out.println("Record Found! ");
 				id = rs.getInt(1);
 				name = rs.getString(2);
+				message.put("id", id);
+		    	message.put("email", email);
+		    	message.put("name", name);
+		    	message.put("password", "<hidden>");
+		    	
+		    	Algorithm alg = Algorithm.HMAC256("i_am_secret");
+	    		token = JWT.create().withIssuer("auth0").sign(alg);
+	    		
+	    		message.put("token", token);
 			} else {
 				System.out.println("Record not found!");
+				message.put("error", "Invalid Login Attempt");
 			}
 
 			stmt.close();
@@ -134,17 +157,7 @@ public class Database {
 	} catch (Exception e) {
 		System.out.println(e);
 	}
-    	JSONObject message = new JSONObject();
-    	JSONArray array = new JSONArray();
-    	
-    	message.put("id", id);
-    	message.put("email", email);
-    	message.put("name", name);
-    	message.put("password", "<hidden>");
-    	message.put("token", "token");
-    	array.put(message);
-    	
-		return array;
+		return message;
 }
 	
 	private static Connection getConnection() throws URISyntaxException, SQLException {

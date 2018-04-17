@@ -10,6 +10,8 @@ import java.sql.Statement;
 import java.sql.Timestamp;
 import java.util.Date;
 
+import org.jasypt.util.password.StrongPasswordEncryptor;
+
 import org.json.JSONObject;
 
 import com.auth0.jwt.JWT;
@@ -58,13 +60,18 @@ public class Database {
 		
 		java.sql.Timestamp tC = new Timestamp(timeC.getTime());
 		java.sql.Timestamp tU = new Timestamp(timeU.getTime());
+		
+		JSONObject obj = new JSONObject();
 		try {
 			Class.forName("org.postgresql.Driver");
 			c = getConnection();
 			c.setAutoCommit(false);
 			System.out.println("Opened database successfully");
 
-
+			StrongPasswordEncryptor passwordEncryptor = new StrongPasswordEncryptor();
+			String encryptedPassword = passwordEncryptor.encryptPassword(password);
+			System.out.println(encryptedPassword);
+			
 			Statement stmt = c.createStatement();
 			ResultSet rs = stmt.executeQuery("SELECT * FROM users WHERE id = ( SELECT MAX (id) FROM users );");
 			
@@ -75,36 +82,34 @@ public class Database {
 			}
 			stmt.close();
 			
-//			PreparedStatement pstmt = c.prepareStatement("INSERT INTO USERS (ID, NAME, EMAIL, USERNAME, PASSWORD, TIMECREATED, TIMEUPDATED)"
-//	            + "VALUES (?, ?, ?, ?, ?, ?, ?)");
-//			pstmt.setInt(1, id);
-//			pstmt.setString(2, name);
-//			pstmt.setString(3, email);
-//			pstmt.setString(4, username);
-//			pstmt.setString(5, password);
-//			pstmt.setTimestamp(6, tC);
-//			pstmt.setTimestamp(7, tU);
-//			
-//			pstmt.executeUpdate();
-//			pstmt.close();
+			PreparedStatement pstmt = c.prepareStatement("INSERT INTO USERS (ID, NAME, EMAIL, USERNAME, PASSWORD, TIMECREATED, TIMEUPDATED)"
+	            + "VALUES (?, ?, ?, ?, ?, ?, ?)");
+			pstmt.setInt(1, id);
+			pstmt.setString(2, name);
+			pstmt.setString(3, email);
+			pstmt.setString(4, username);
+			pstmt.setString(5, encryptedPassword);
+			pstmt.setTimestamp(6, tC);
+			pstmt.setTimestamp(7, tU);
+			
+			pstmt.executeUpdate();
+			pstmt.close();
 			c.commit();
 			c.close();
+			
+			obj.put("id", id);
+			obj.put("name", name);
+			obj.put("email", email);
+			obj.put("username", username);
+			obj.put("Record Created", tC);
+			obj.put("Record Updated", tU);
 		} catch (Exception e) {
 			System.err.println( e.getClass().getName() + ": " + e.getMessage());
 			System.exit(0);
 		}
 		System.out.println("Record added successfully");
 		
-		JSONObject obj = new JSONObject();
 		String token = "";
-		
-		obj.put("id", id);
-		obj.put("name", name);
-		obj.put("email", email);
-		obj.put("username", username);
-		obj.put("password", "<hidden>");
-		obj.put("Record Created", tC);
-		obj.put("Record Updated", tU);
 		
 		try {
 			Algorithm alg = Algorithm.HMAC256("i_am_secret");
@@ -129,26 +134,32 @@ public class Database {
 
 			Class.forName("org.postgresql.Driver");
 			c = getConnection();
-			System.out.println("Opened database successfully");	
+			System.out.println("Opened database successfully");
+			
 			stmt = c.createStatement();
-			ResultSet rs = stmt.executeQuery("SELECT * FROM USERS WHERE email = '" + email + "' AND password = '"
-					+ password + "';");
+			ResultSet rs = stmt.executeQuery("SELECT * FROM USERS WHERE email = '" + email + "';");
 			
 			if (rs.next()) {
-				System.out.println("Record Found! ");
-				id = rs.getInt(1);
-				name = rs.getString(2);
-				message.put("id", id);
-		    	message.put("email", email);
-		    	message.put("name", name);
-		    	message.put("password", "<hidden>");
-		    	
-		    	Algorithm alg = Algorithm.HMAC256("i_am_secret");
-	    		token = JWT.create().withIssuer("auth0").sign(alg);
-	    		
+				String encPassword = rs.getString("password");
+				StrongPasswordEncryptor passwordEncryptor = new StrongPasswordEncryptor();
+
+				if (passwordEncryptor.checkPassword(password, encPassword)) {
+				
+					System.out.println("Record Found! ");
+					id = rs.getInt("id");
+					name = rs.getString("name");
+					message.put("id", id);
+			    	message.put("email", email);
+			    	message.put("name", name);
+			    	
+			    	Algorithm alg = Algorithm.HMAC256("i_am_secret");
+		    		token = JWT.create().withIssuer("auth0").sign(alg);
+		    		
 	    		message.put("token", token);
+				} else {
+					message.put("error", "Invalid Password!");
+				}
 			} else {
-				System.out.println("Record not found!");
 				message.put("error", "Invalid Login Attempt");
 			}
 
@@ -161,10 +172,10 @@ public class Database {
 }
 	
 	private static Connection getConnection() throws URISyntaxException, SQLException {
-//	    String dbUrl = System.getenv("JDBC_DATABASE_URL");
-//		return DriverManager.getConnection(dbUrl);
-	    return DriverManager.getConnection("jdbc:postgresql://127.0.0.1:5432/blackjack", "postgres",
-			"9074dewberry1136");
+	    String dbUrl = System.getenv("JDBC_DATABASE_URL");
+		return DriverManager.getConnection(dbUrl);
+//	    return DriverManager.getConnection("jdbc:postgresql://127.0.0.1:5432/blackjack", "postgres",
+//			"9074dewberry1136");
 	}
 
 }

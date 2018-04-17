@@ -1,10 +1,10 @@
-package blackjack;
+package blackjack.database;
 
 import java.sql.DriverManager;
 import java.sql.Connection;
 import java.sql.SQLException;
 
-public class db {
+public class dbTest {
 
 	public static void main(String[] argv) {
 

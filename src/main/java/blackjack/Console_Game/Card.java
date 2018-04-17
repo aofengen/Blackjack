@@ -1,4 +1,4 @@
-package blackjack;
+package blackjack.Console_Game;
 
 public class Card {
 	private Suit suit;

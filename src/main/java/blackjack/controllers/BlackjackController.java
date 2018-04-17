@@ -1,4 +1,4 @@
-package blackjack;
+package blackjack.controllers;
 
 
 import org.json.JSONArray;
@@ -7,6 +7,10 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
+
+import blackjack.Console_Game.*;
+import blackjack.database.*;
+import blackjack.models.*;
 
 
 @CrossOrigin

@@ -1,4 +1,4 @@
-package blackjack;
+package blackjack.Console_Game;
 
 import java.util.ArrayList;
 import java.util.Scanner;

@@ -22,7 +22,7 @@ public class Database {
 	public static void main(String[] args) throws Exception {
 //		createUserTable();
 		//insertIntoUserTable("Test", "x@x.com", "aofengen", "xxxxxxxx");
-		checkUserTable("a", "b");
+//		checkUserTable("a", "b");
 	}
 	
 	public static void createUserTable() {
@@ -51,7 +51,7 @@ public class Database {
 		System.out.println("Table created successfully");
 	}
 
-	public static JSONObject insertIntoUserTable(String name, String email, String username, String password) {
+	public static JSONObject signup(String name, String email, String username, String password) {
 		Connection c = null;
 		int id = 0;
 		
@@ -123,12 +123,10 @@ public class Database {
 		return obj;
 	}
 
-	public static JSONObject checkUserTable(String email, String password) {
+	public static JSONObject login(String email, String password) {
 		Connection c = null;
 		Statement stmt = null;
-		int id = 0;
-		String name = "";
-		String token = "";
+
 		JSONObject message = new JSONObject();
 		try {
 
@@ -137,28 +135,11 @@ public class Database {
 			System.out.println("Opened database successfully");
 			
 			stmt = c.createStatement();
-			ResultSet rs = stmt.executeQuery("SELECT * FROM USERS WHERE email = '" + email + "';");
+			ResultSet rs = findEmailInDB(email, stmt);
+			boolean passMatch = checkPassword(rs, password);
 			
-			if (rs.next()) {
-				String encPassword = rs.getString("password");
-				StrongPasswordEncryptor passwordEncryptor = new StrongPasswordEncryptor();
-
-				if (passwordEncryptor.checkPassword(password, encPassword)) {
-				
-					System.out.println("Record Found! ");
-					id = rs.getInt("id");
-					name = rs.getString("name");
-					message.put("id", id);
-			    	message.put("email", email);
-			    	message.put("name", name);
-			    	
-			    	Algorithm alg = Algorithm.HMAC256("i_am_secret");
-		    		token = JWT.create().withIssuer("auth0").sign(alg);
-		    		
-	    		message.put("token", token);
-				} else {
-					message.put("error", "Invalid Password!");
-				}
+			if (passMatch) {
+					message = getUserInfo(rs);
 			} else {
 				message.put("error", "Invalid Login Attempt");
 			}
@@ -171,11 +152,52 @@ public class Database {
 		return message;
 }
 	
-	private static Connection getConnection() throws URISyntaxException, SQLException {
-	    String dbUrl = System.getenv("JDBC_DATABASE_URL");
-		return DriverManager.getConnection(dbUrl);
-//	    return DriverManager.getConnection("jdbc:postgresql://127.0.0.1:5432/blackjack", "postgres",
-//			"9074dewberry1136");
+	private static boolean checkPassword(ResultSet rs, String password) throws SQLException {
+		if (rs.next()) {
+			String encPassword = rs.getString("password");
+			StrongPasswordEncryptor passwordEncryptor = new StrongPasswordEncryptor();
+
+			if (passwordEncryptor.checkPassword(password, encPassword)) {
+			
+				System.out.println("Record Found! ");
+				return true;
+			} else {
+				return false;
+			}
+		} else {
+			return false;
+		}
 	}
 
+	private static Connection getConnection() throws URISyntaxException, SQLException {
+//	    String dbUrl = System.getenv("JDBC_DATABASE_URL");
+//		return DriverManager.getConnection(dbUrl);
+	    return DriverManager.getConnection("jdbc:postgresql://127.0.0.1:5432/blackjack", "postgres",
+			"9074dewberry1136");
+	}
+	
+	private static ResultSet findEmailInDB(String email, Statement stmt) throws SQLException {
+		ResultSet rs = stmt.executeQuery("SELECT * FROM USERS WHERE email = '" + email + "';");
+		return rs;
+	}
+
+	private static JSONObject getUserInfo(ResultSet rs) throws Exception {
+		JSONObject obj = new JSONObject();
+		try {
+			obj.put("id", rs.getInt("id"));
+	    	obj.put("email", rs.getString("email"));
+	    	obj.put("name", rs.getString("name"));
+	    	obj.put("username", rs.getString("username"));
+	    	
+	    	Algorithm alg = Algorithm.HMAC256("i_am_secret");
+			String token = JWT.create().withIssuer("auth0").sign(alg);
+			
+			obj.put("token", token);	
+		} catch (Exception e) {
+			System.out.println(e);
+		}
+		
+		return obj;
+	}
+	
 }

@@ -46,7 +46,7 @@ public class BlackjackController {
     		String username = signup.getUsername();
     		String password = signup.getPassword();
     		
-    		obj = Database.insertIntoUserTable(name, email, username, password);
+    		obj = Database.signup(name, email, username, password);
     	}
     	catch (Exception e) {
     		System.out.println(e);
@@ -69,7 +69,7 @@ public class BlackjackController {
     		String email = login.getEmail();
     		String password = login.getPassword();
     		
-    		obj = Database.checkUserTable(email, password);
+    		obj = Database.login(email, password);
     	} catch (Exception e) {
     		System.out.println(e);
     	}

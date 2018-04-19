@@ -15,7 +15,9 @@ import org.jasypt.util.password.StrongPasswordEncryptor;
 import org.json.JSONObject;
 
 import com.auth0.jwt.JWT;
+import com.auth0.jwt.JWTVerifier;
 import com.auth0.jwt.algorithms.Algorithm;
+import com.auth0.jwt.interfaces.DecodedJWT;
 
 public class Database {
 
@@ -76,7 +78,7 @@ public class Database {
 			ResultSet rs = stmt.executeQuery("SELECT * FROM users WHERE id = ( SELECT MAX (id) FROM users );");
 			
 			if (rs.next()) {
-				id = rs.getInt(1) + 1;
+				id = rs.getInt("id") + 1;
 			} else {
 				id = 1;
 			}
@@ -133,10 +135,11 @@ public class Database {
 			Class.forName("org.postgresql.Driver");
 			c = getConnection();
 			System.out.println("Opened database successfully");
+			c.setAutoCommit(false);
 			
 			stmt = c.createStatement();
 			ResultSet rs = findEmailInDB(email, stmt);
-			boolean passMatch = checkPassword(rs, password);
+			boolean passMatch = passwordCheck(rs, password);
 			
 			if (passMatch) {
 					message = getUserInfo(rs);
@@ -146,25 +149,83 @@ public class Database {
 
 			stmt.close();
 			c.close();
-	} catch (Exception e) {
-		System.out.println(e);
-	}
+		} catch (Exception e) {
+			System.out.println(e);
+		}
 		return message;
-}
+	}
 	
-	private static boolean checkPassword(ResultSet rs, String password) throws SQLException {
+	public static JSONObject changeInfo(String name, String newEmail, String oldEmail, String username, String password, String token, int id) throws Exception {
+		Connection c = null;
+		Statement stmt = null;
+		JSONObject obj = new JSONObject();
+		
+		Date timeU = new Date();
+		java.sql.Timestamp tU = new Timestamp(timeU.getTime());
+		
+		boolean tokenMatch = checkToken(token);
+		if (tokenMatch) {
+			try {
+				Class.forName("org.postgresql.Driver");
+				c = getConnection();
+				c.setAutoCommit(false);
+				System.out.println("Opened database successfully");
+				
+				stmt = c.createStatement();
+				System.out.println(oldEmail);
+				ResultSet rs = findEmailInDB(oldEmail, stmt);
+
+				boolean passMatch = passwordCheck(rs, password);
+				
+				stmt.close();
+				if (passMatch) {
+					PreparedStatement ps = c.prepareStatement("UPDATE USERS SET NAME = ?, USERNAME = ?, EMAIL = ?, TIMEUPDATED = ? WHERE ID = ?");
+					
+					ps.setString(1, name);
+					ps.setString(2, username);
+					ps.setString(3, newEmail);
+					ps.setTimestamp(4, tU);
+					ps.setInt(5, id);
+					ps.executeUpdate();
+					ps.close();
+				} else {
+					obj.put("error", "Invalid Password!");
+				}
+			} catch (Exception e) {
+				System.out.println(e);
+			}
+			
+			c.commit();
+			c.close();
+			
+			obj.put("id", id);
+			obj.put("New Name", name);
+			obj.put("New Email", newEmail);
+			obj.put("New Username", username);
+			obj.put("Record Updated", tU);
+		} else {
+			obj.put("error", "Invalid or missing token!");
+		}
+		return obj;
+	}
+	
+	private static boolean passwordCheck(ResultSet rs, String password) throws SQLException {
 		if (rs.next()) {
 			String encPassword = rs.getString("password");
 			StrongPasswordEncryptor passwordEncryptor = new StrongPasswordEncryptor();
 
 			if (passwordEncryptor.checkPassword(password, encPassword)) {
 			
-				System.out.println("Record Found! ");
+				System.out.println("Password Match!");
+				System.out.println(rs.getInt("id"));
+				
 				return true;
 			} else {
+				System.out.println("No Match!");
 				return false;
 			}
 		} else {
+			System.out.println("No Result Set Found!");
 			return false;
 		}
 	}
@@ -194,10 +255,24 @@ public class Database {
 			
 			obj.put("token", token);	
 		} catch (Exception e) {
-			System.out.println(e);
+			System.err.println(e);
 		}
 		
 		return obj;
 	}
 	
+	private static boolean checkToken(String token) throws Exception {
+		boolean tokenValid;
+		try {
+		    Algorithm algorithm = Algorithm.HMAC256("i_am_secret");
+		    JWTVerifier verifier = JWT.require(algorithm).withIssuer("auth0").build();
+		    DecodedJWT jwt = verifier.verify(token);
+		    System.out.println(jwt);
+		    tokenValid = true;
+		} catch (Exception e){
+		    System.err.println(e);
+		    tokenValid = false;
+		}
+		return tokenValid;
+	}
 }

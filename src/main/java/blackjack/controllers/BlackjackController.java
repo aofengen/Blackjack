@@ -29,7 +29,16 @@ public class BlackjackController {
     		return "Greetings, Professor Falcon. Would you like to play a game?";
     	}
     
-    @CrossOrigin
+    @GetMapping("/shuffle")
+	public String shuffle() throws Exception {
+    	Deck newDeck = new Deck();
+    	newDeck.createFullDeck();
+    	newDeck.shuffle();
+    	
+    	String obj = newDeck.deckToJSON().toString();
+		return obj;
+	}
+   
     @PostMapping("/signup")
     public String signup(@RequestBody Signup signup) throws Exception {
 	   try {
@@ -77,13 +86,32 @@ public class BlackjackController {
     	return obj.toString();
     }
     
-    @GetMapping("/shuffle")
-	public String shuffle() throws Exception {
-    	Deck newDeck = new Deck();
-    	newDeck.createFullDeck();
-    	newDeck.shuffle();
+    @PostMapping("/changeInfo")
+    public String changeInfo(@RequestBody Change change) {
+    	JSONObject obj = new JSONObject();
+    	try {
+  		    Database.createUserTable();
+  	    } catch (Exception e) {
+  		    System.out.println(e);
+  	    }
     	
-    	String obj = newDeck.deckToJSON().toString();
-		return obj;
-	}
+    	try {
+    		String name = change.getName();
+    		String newEmail = change.getNewEmail();
+    		String oldEmail = change.getOldEmail();
+    		String username = change.getUsername();
+    		String password = change.getPassword();
+    		String token = change.getToken();
+    		int id = change.getUserIdNumber();
+    		
+    		obj = Database.changeInfo(name, newEmail, oldEmail, username, password, token, id);
+    	}
+    	catch (Exception e) {
+    		System.out.println(e);
+    	}
+    	
+    	return obj.toString();
+    }
+    
+    
 }

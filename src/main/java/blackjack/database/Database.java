@@ -25,9 +25,29 @@ public class Database {
 //		createUserTable();
 		//insertIntoUserTable("Test", "x@x.com", "aofengen", "xxxxxxxx");
 //		checkUserTable("a", "b");
+//		dropUserTable();
 	}
 	
-	public static void createUserTable() {
+//	private static void dropUserTable() throws Exception {
+//		Connection c = null;
+//		Statement stmt = null;
+//		try {
+//			Class.forName("org.postgresql.Driver");
+//			c = getConnection();
+//			System.out.println("Opened database successfully");
+//			
+//			stmt = c.createStatement();
+//			String sql = "DROP TABLE USERS";
+//			stmt.executeQuery(sql);
+//			stmt.close();
+//			c.close();
+//		} catch (Exception e) {
+//			System.err.println( e.getClass().getName() + ": " + e.getMessage());
+//		}
+//		System.out.println("Table dropped successfully");
+//	}
+	
+	public static void createUserTable() throws Exception {
 		Connection c = null;
 		Statement stmt = null;
 		try {
@@ -105,7 +125,6 @@ public class Database {
 			obj.put("Record Updated", tU);
 		} catch (Exception e) {
 			System.err.println( e.getClass().getName() + ": " + e.getMessage());
-			System.exit(0);
 		}
 		System.out.println("Record added successfully");
 		
@@ -286,6 +305,7 @@ public class Database {
 	private static Connection getConnection() throws URISyntaxException, SQLException {
 	    String dbUrl = System.getenv("JDBC_DATABASE_URL");
 		return DriverManager.getConnection(dbUrl);
+//		return DriverManager.getConnection("postgres://uaaybdesnzludt:ce70a9de8b82e80704a25751650f05ccddd583cd540736257bc11e1093fa0fb2@ec2-54-225-200-15.compute-1.amazonaws.com:5432/d10rj1van59kb3");
 //	    return DriverManager.getConnection("jdbc:postgresql://127.0.0.1:5432/blackjack", "postgres",
 //			"9074dewberry1136");
 	}

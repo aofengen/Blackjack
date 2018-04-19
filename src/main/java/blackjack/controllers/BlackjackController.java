@@ -87,7 +87,7 @@ public class BlackjackController {
     }
     
     @PostMapping("/changeInfo")
-    public String changeInfo(@RequestBody Change change) {
+    public String changeInfo(@RequestBody Change change) throws Exception {
     	JSONObject obj = new JSONObject();
     	try {
   		    Database.createUserTable();
@@ -96,15 +96,13 @@ public class BlackjackController {
   	    }
     	
     	try {
-    		String name = change.getName();
+    		String newName = change.getNewName();
     		String newEmail = change.getNewEmail();
-    		String oldEmail = change.getOldEmail();
-    		String username = change.getUsername();
+    		String newUsername = change.getNewUsername();
     		String password = change.getPassword();
     		String token = change.getToken();
-    		int id = change.getUserIdNumber();
-    		
-    		obj = Database.changeInfo(name, newEmail, oldEmail, username, password, token, id);
+    		int id = change.getId();
+    		obj = Database.changeInfo(newName, newEmail, newUsername, password, token, id);
     	}
     	catch (Exception e) {
     		System.out.println(e);
@@ -113,5 +111,29 @@ public class BlackjackController {
     	return obj.toString();
     }
     
+    @PostMapping("/changePassword")
+    public String hangeInfo(@RequestBody ChangePass pass) throws Exception {
+    	JSONObject obj = new JSONObject();
+    	try {
+  		    Database.createUserTable();
+  	    } catch (Exception e) {
+  		    System.out.println(e);
+  	    }
+    	
+    	try {
+    		String oldPass = pass.getOldPass();
+    		String newPass = pass.getNewPass();
+//    		String confirmPass = pass.getConfirmPass();
+    		String token = pass.getToken();
+    		int id = pass.getId();
+
+    		obj = Database.changePassword(oldPass, newPass, token, id);
+    	}
+    	catch (Exception e) {
+    		System.out.println(e);
+    	}
+    	
+    	return obj.toString();
+    }
     
 }

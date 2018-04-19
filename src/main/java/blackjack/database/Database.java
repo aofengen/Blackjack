@@ -70,9 +70,7 @@ public class Database {
 			c.setAutoCommit(false);
 			System.out.println("Opened database successfully");
 
-			StrongPasswordEncryptor passwordEncryptor = new StrongPasswordEncryptor();
-			String encryptedPassword = passwordEncryptor.encryptPassword(password);
-			System.out.println(encryptedPassword);
+			String encryptedPassword = passEncrypt(password);
 			
 			Statement stmt = c.createStatement();
 			ResultSet rs = stmt.executeQuery("SELECT * FROM users WHERE id = ( SELECT MAX (id) FROM users );");
@@ -125,6 +123,12 @@ public class Database {
 		return obj;
 	}
 
+	private static String passEncrypt(String password) {
+		StrongPasswordEncryptor passwordEncryptor = new StrongPasswordEncryptor();
+		String encryptedPassword = passwordEncryptor.encryptPassword(password);
+		return encryptedPassword;
+	}
+
 	public static JSONObject login(String email, String password) {
 		Connection c = null;
 		Statement stmt = null;
@@ -142,7 +146,7 @@ public class Database {
 			boolean passMatch = passwordCheck(rs, password);
 			
 			if (passMatch) {
-					message = getUserInfo(rs);
+				message = getUserInfo(rs);
 			} else {
 				message.put("error", "Invalid Login Attempt");
 			}
@@ -155,7 +159,7 @@ public class Database {
 		return message;
 	}
 	
-	public static JSONObject changeInfo(String name, String newEmail, String oldEmail, String username, String password, String token, int id) throws Exception {
+	public static JSONObject changeInfo(String newName, String newEmail, String newUsername, String password, String token, int id) throws Exception {
 		Connection c = null;
 		Statement stmt = null;
 		JSONObject obj = new JSONObject();
@@ -172,8 +176,8 @@ public class Database {
 				System.out.println("Opened database successfully");
 				
 				stmt = c.createStatement();
-				System.out.println(oldEmail);
-				ResultSet rs = findEmailInDB(oldEmail, stmt);
+
+				ResultSet rs = findUserInDB(id, stmt);
 
 				boolean passMatch = passwordCheck(rs, password);
 				
@@ -181,8 +185,8 @@ public class Database {
 				if (passMatch) {
 					PreparedStatement ps = c.prepareStatement("UPDATE USERS SET NAME = ?, USERNAME = ?, EMAIL = ?, TIMEUPDATED = ? WHERE ID = ?");
 					
-					ps.setString(1, name);
-					ps.setString(2, username);
+					ps.setString(1, newName);
+					ps.setString(2, newUsername);
 					ps.setString(3, newEmail);
 					ps.setTimestamp(4, tU);
 					ps.setInt(5, id);
@@ -199,9 +203,9 @@ public class Database {
 			c.close();
 			
 			obj.put("id", id);
-			obj.put("New Name", name);
+			obj.put("New Name", newName);
 			obj.put("New Email", newEmail);
-			obj.put("New Username", username);
+			obj.put("New Username", newUsername);
 			obj.put("Record Updated", tU);
 		} else {
 			obj.put("error", "Invalid or missing token!");
@@ -209,6 +213,57 @@ public class Database {
 		return obj;
 	}
 	
+	public static JSONObject changePassword(String oldPass, String newPass, String token, int id) throws Exception {
+		Connection c = null;
+		Statement stmt = null;
+		JSONObject obj = new JSONObject();
+		
+		Date timeU = new Date();
+		java.sql.Timestamp tU = new Timestamp(timeU.getTime());
+		
+		boolean tokenMatch = checkToken(token);
+		if (tokenMatch) {
+			try {
+				Class.forName("org.postgresql.Driver");
+				c = getConnection();
+				c.setAutoCommit(false);
+				System.out.println("Opened database successfully");
+				
+				stmt = c.createStatement();
+
+				ResultSet rs = findUserInDB(id, stmt);
+
+				boolean passMatch = passwordCheck(rs, oldPass);
+								
+				stmt.close();
+				if (passMatch) {
+					String encPassword = passEncrypt(newPass);
+					PreparedStatement ps = c.prepareStatement("UPDATE USERS SET PASSWORD = ?, TIMEUPDATED = ? WHERE ID = ?");
+					
+					ps.setString(1, encPassword);
+					ps.setTimestamp(2, tU);
+					ps.setInt(3, id);
+					ps.executeUpdate();
+					ps.close();
+					
+					obj.put("id", id);
+					obj.put("Password Update", "Successful!");
+					obj.put("Record Updated", tU);
+				} else {
+					obj.put("error", "Invalid Password!");
+				}
+			} catch (Exception e) {
+				System.out.println(e);
+			}
+			c.commit();
+			c.close();
+			
+		} else {
+			obj.put("error", "Invalid or missing token!");
+		}
+		return obj;
+	}
+
 	private static boolean passwordCheck(ResultSet rs, String password) throws SQLException {
 		if (rs.next()) {
 			String encPassword = rs.getString("password");
@@ -217,8 +272,6 @@ public class Database {
 			if (passwordEncryptor.checkPassword(password, encPassword)) {
 			
 				System.out.println("Password Match!");
-				System.out.println(rs.getInt("id"));
-				
 				return true;
 			} else {
 				System.out.println("No Match!");
@@ -231,14 +284,19 @@ public class Database {
 	}
 
 	private static Connection getConnection() throws URISyntaxException, SQLException {
-//	    String dbUrl = System.getenv("JDBC_DATABASE_URL");
-//		return DriverManager.getConnection(dbUrl);
-	    return DriverManager.getConnection("jdbc:postgresql://127.0.0.1:5432/blackjack", "postgres",
-			"9074dewberry1136");
+	    String dbUrl = System.getenv("JDBC_DATABASE_URL");
+		return DriverManager.getConnection(dbUrl);
+//	    return DriverManager.getConnection("jdbc:postgresql://127.0.0.1:5432/blackjack", "postgres",
+//			"9074dewberry1136");
 	}
 	
 	private static ResultSet findEmailInDB(String email, Statement stmt) throws SQLException {
 		ResultSet rs = stmt.executeQuery("SELECT * FROM USERS WHERE email = '" + email + "';");
+		return rs;
+	}
+	
+	private static ResultSet findUserInDB(int id, Statement stmt) throws SQLException {
+		ResultSet rs = stmt.executeQuery("SELECT * FROM USERS WHERE id = " + id + ";");
 		return rs;
 	}
 
@@ -267,7 +325,6 @@ public class Database {
 		    Algorithm algorithm = Algorithm.HMAC256("i_am_secret");
 		    JWTVerifier verifier = JWT.require(algorithm).withIssuer("auth0").build();
 		    DecodedJWT jwt = verifier.verify(token);
-		    System.out.println(jwt);
 		    tokenValid = true;
 		} catch (Exception e){
 		    System.err.println(e);
@@ -275,4 +332,6 @@ public class Database {
 		}
 		return tokenValid;
 	}
+
+
 }

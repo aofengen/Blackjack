@@ -2,30 +2,28 @@ package blackjack.models;
 
 public class Change {
 	
-	private String name = "";
+	private String newName = "";
 	private String newEmail = "";
-	private String oldEmail = "";
-	private String username = "";
+	private String newUsername = "";
 	private String password = "";
 	private String token = "";
-	private int userIdNumber;
+	private int id;
 	
 	public Change() {
-		this.name = "";
+		this.newName = "";
 		this.newEmail = "";
-		this.oldEmail = "";
-		this.username = "";
+		this.newUsername = "";
 		this.password = "";
 		this.token = "";
-		this.userIdNumber = 0;
+		this.id = 0;
 	}
 	
-	public String getName() {
-		return this.name;
+	public String getNewName() {
+		return this.newName;
 	}
 	
-	public void setName(String n) {
-		this.name = n;
+	public void setNewName(String n) {
+		this.newName = n;
 	}
 	
 	public String getNewEmail() {
@@ -36,20 +34,12 @@ public class Change {
 		this.newEmail = nE;
 	}
 	
-	public String getOldEmail() {
-		return this.oldEmail;
+	public String getNewUsername() {
+		return this.newUsername;
 	}
 	
-	public void setOldEmail(String e) {
-		this.oldEmail = e;
-	}
-	
-	public String getUsername() {
-		return this.username;
-	}
-	
-	public void setUsername(String u) {
-		this.username = u;
+	public void setNewUsername(String u) {
+		this.newUsername = u;
 	}
 	
 	public String getPassword() {
@@ -68,11 +58,11 @@ public class Change {
 		this.token = t;
 	}
 	
-	public int getUserIdNumber() {
-		return this.userIdNumber;
+	public int getId() {
+		return this.id;
 	}
 	
-	public void setUserIdNumber(int id) {
-		this.userIdNumber = id;
+	public void setId(int id) {
+		this.id = id;
 	}
 }

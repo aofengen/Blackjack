@@ -3,6 +3,7 @@ package blackjack.controllers;
 import org.json.JSONObject;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
@@ -38,6 +39,17 @@ public class BlackjackController {
     	String obj = newDeck.deckToJSON().toString();
 		return obj;
 	}
+    
+    @GetMapping("/stats/{id}")
+    public String getStats(@PathVariable(name = "id") int id) throws Exception {
+    	JSONObject obj = new JSONObject();
+    	try {
+	    	obj = Database.getStats(id);
+    	} catch (Exception e) {
+    		System.out.println(e);
+    	}
+    	return obj.toString();
+    }
    
     @PostMapping("/signup")
     public String signup(@RequestBody Signup signup) throws Exception {
@@ -123,7 +135,6 @@ public class BlackjackController {
     	try {
     		String oldPass = pass.getOldPass();
     		String newPass = pass.getNewPass();
-//    		String confirmPass = pass.getConfirmPass();
     		String token = pass.getToken();
     		int id = pass.getId();
 
@@ -132,6 +143,21 @@ public class BlackjackController {
     	catch (Exception e) {
     		System.out.println(e);
     	}
+    	
+    	return obj.toString();
+    }
+    
+    @PostMapping("/stats/{id}")
+    public String postStats(@PathVariable(name = "id") int id, @RequestBody Stats stats) throws Exception {
+    	JSONObject obj = new JSONObject();
+    	
+    	int handsWon = stats.getHandsWon();
+    	int handsPlayed = stats.getHandsPlayed();
+    	int blackjacks = stats.getBlackjacks();
+    	int highMoney = stats.getHighMoney();
+    	
+//    	obj.put("message", "post worked");
+    	obj = Database.updateStatsTable(id, handsWon, handsPlayed, blackjacks, highMoney);
     	
     	return obj.toString();
     }

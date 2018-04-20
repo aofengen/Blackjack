@@ -26,6 +26,7 @@ public class Database {
 		//insertIntoUserTable("Test", "x@x.com", "aofengen", "xxxxxxxx");
 //		checkUserTable("a", "b");
 //		dropUserTable();
+//		createStatsTable();
 	}
 	
 //	private static void dropUserTable() throws Exception {
@@ -46,6 +47,25 @@ public class Database {
 //		}
 //		System.out.println("Table dropped successfully");
 //	}
+	
+//	private static void dropStatsTable() throws Exception {
+//	Connection c = null;
+//	Statement stmt = null;
+//	try {
+//		Class.forName("org.postgresql.Driver");
+//		c = getConnection();
+//		System.out.println("Opened database successfully");
+//		
+//		stmt = c.createStatement();
+//		String sql = "DROP TABLE STATS";
+//		stmt.executeQuery(sql);
+//		stmt.close();
+//		c.close();
+//	} catch (Exception e) {
+//		System.err.println( e.getClass().getName() + ": " + e.getMessage());
+//	}
+//	System.out.println("Table dropped successfully");
+//}
 	
 	public static void createUserTable() throws Exception {
 		Connection c = null;
@@ -70,7 +90,33 @@ public class Database {
 		} catch (Exception e) {
 			System.err.println( e.getClass().getName() + ": " + e.getMessage());
 		}
-		System.out.println("Table created successfully");
+		System.out.println("Users table created successfully");
+	}
+	
+	public static void createStatsTable() throws Exception {
+		Connection c = null;
+		Statement stmt = null;
+		try {
+			Class.forName("org.postgresql.Driver");
+			c = getConnection();
+			System.out.println("Opened database successfully");
+			
+			stmt = c.createStatement();
+			String sql = "CREATE TABLE STATS " +
+					"(ID INT PRIMARY KEY 		NOT NULL," +
+					"HANDSWON		 INT	    NOT NULL," +
+					"HANDSPLAYED 	 INT 		NOT NULL," +
+					"BLACKJACKS    	 INT     	NOT NULL," +
+					"MOSTMONEYWON    INT	    NOT NULL," +
+					"TIMECREATED    TIMESTAMP   NOT NULL," +
+					"TIMEUPDATED    TIMESTAMP   NOT NULL)";
+			stmt.executeQuery(sql);
+			stmt.close();
+			c.close();
+		} catch (Exception e) {
+			System.err.println( e.getClass().getName() + ": " + e.getMessage());
+		}
+		System.out.println("Stats table created successfully");
 	}
 
 	public static JSONObject signup(String name, String email, String username, String password) {
@@ -281,6 +327,92 @@ public class Database {
 			obj.put("error", "Invalid or missing token!");
 		}
 		return obj;
+	}
+	
+	public static JSONObject getStats(int id) throws Exception {
+		Connection c = null;
+		JSONObject obj = new JSONObject();
+		try {
+			Class.forName("org.postgresql.Driver");
+			c = getConnection();
+			c.setAutoCommit(false);
+			System.out.println("Opened database successfully");
+			
+			Statement stmt = c.createStatement();
+			ResultSet rs = stmt.executeQuery("SELECT * FROM stats WHERE id = '" + id + "';");
+			
+			if (rs.next()) {
+				obj.put("Hands Won", rs.getInt("handswon"));
+				obj.put("Hands Played", rs.getInt("handsplayed"));
+				obj.put("Blackjacks", rs.getInt("blackjacks"));
+				obj.put("Most Money Won", rs.getInt("mostmoneywon"));
+			}
+		} catch (Exception e) {
+			System.out.println(e);
+		}
+		return obj;
+	}
+	
+	public static JSONObject updateStatsTable(int id, int handsWon, int handsPlayed, int blackjacks, int highMoney) {
+		Connection c = null;
+		
+		Date timeC = new Date();
+		Date timeU = new Date();
+		
+		java.sql.Timestamp tC = new Timestamp(timeC.getTime());
+		java.sql.Timestamp tU = new Timestamp(timeU.getTime());
+		
+		JSONObject obj = new JSONObject();
+		try {
+			Class.forName("org.postgresql.Driver");
+			c = getConnection();
+			c.setAutoCommit(false);
+			System.out.println("Opened database successfully");
+			
+			PreparedStatement pstmt = null;
+			Statement stmt = c.createStatement();
+			ResultSet rs = stmt.executeQuery("SELECT * FROM stats WHERE id = '" + id + "';");
+			
+			if (rs.next()) {
+				System.out.println("record exists. updating.");
+				int oldHighMoney = rs.getInt("mostmoneywon");
+				if (oldHighMoney >= highMoney) {
+					highMoney = oldHighMoney;
+				}
+				
+				pstmt = c.prepareStatement("UPDATE STATS SET HANDSWON = ?, HANDSPLAYED = ?, BLACKJACKS = ?, MOSTMONEYWON = ?, TIMEUPDATED = ? WHERE ID = ?");
+					pstmt.setInt(1, rs.getInt("handswon") + handsWon);
+					pstmt.setInt(2, rs.getInt("handsplayed") + handsPlayed);
+					pstmt.setInt(3, rs.getInt("blackjacks") + blackjacks);
+					pstmt.setInt(4, highMoney);
+					pstmt.setTimestamp(5, tU);
+					pstmt.setInt(6, id);
+			} else {
+			pstmt = c.prepareStatement("INSERT INTO STATS (ID, HANDSWON, HANDSPLAYED, BLACKJACKS, MOSTMONEYWON, TIMECREATED, TIMEUPDATED)"
+	            + "VALUES (?, ?, ?, ?, ?, ?, ?)");
+			pstmt.setInt(1, id);
+			pstmt.setInt(2, handsWon);
+			pstmt.setInt(3, handsPlayed);
+			pstmt.setInt(4, blackjacks);
+			pstmt.setInt(5, highMoney);
+			pstmt.setTimestamp(6, tC);
+			pstmt.setTimestamp(7, tU);
+			
+			
+			}
+			pstmt.executeUpdate();
+			pstmt.close();
+			
+			stmt.close();
+			c.commit();
+			c.close();
+			
+			obj.put("message", "Stats Successfully Updated!");
+		} catch (Exception e) {
+			System.out.println(e);
+			obj.put("error", "Stat Update Failed!");
+		}
+			return obj;
 	}
 
 	private static boolean passwordCheck(ResultSet rs, String password) throws SQLException {

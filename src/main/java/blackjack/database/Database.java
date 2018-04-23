@@ -354,6 +354,8 @@ public class Database {
 					int money = rs.getInt("mostmoneywon");
 					int handsWon = rs.getInt("handswon");
 					int handsPlayed = rs.getInt("handsplayed");
+					int totalMoneyWon = rs.getInt("totalmoneywon");
+					int blackjacks = rs.getInt("blackjacks"); 
 					
 					ResultSet rs2 = stmt2.executeQuery("SELECT name FROM users WHERE id = " + id + ";");
 					String name = "";
@@ -367,6 +369,8 @@ public class Database {
 					obj.put("money", money);
 					obj.put("handswon", handsWon);
 					obj.put("handsplayed", handsPlayed);
+					obj.put("blackjacks", blackjacks);
+					obj.put("totalmoney", totalMoneyWon);
 					array.put(i, obj);
 				}
 				

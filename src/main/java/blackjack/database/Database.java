@@ -343,10 +343,10 @@ public class Database {
 			ResultSet rs = stmt.executeQuery("SELECT * FROM stats WHERE id = '" + id + "';");
 			
 			if (rs.next()) {
-				obj.put("Hands Won", rs.getInt("handswon"));
-				obj.put("Hands Played", rs.getInt("handsplayed"));
-				obj.put("Blackjacks", rs.getInt("blackjacks"));
-				obj.put("Most Money Won", rs.getInt("mostmoneywon"));
+				obj.put("handswon", rs.getInt("handswon"));
+				obj.put("handsplayed", rs.getInt("handsplayed"));
+				obj.put("blackjacks", rs.getInt("blackjacks"));
+				obj.put("mostmoneywon", rs.getInt("mostmoneywon"));
 			}
 			c.close();
 		} catch (Exception e) {

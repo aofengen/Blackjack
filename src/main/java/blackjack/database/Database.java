@@ -348,14 +348,15 @@ public class Database {
 				obj.put("blackjacks", rs.getInt("blackjacks"));
 				obj.put("mostmoneywon", rs.getInt("mostmoneywon"));
 			}
-			c.close();
+			
 		} catch (Exception e) {
 			System.out.println(e);
 		}
+		c.close();
 		return obj;
 	}
 	
-	public static JSONObject updateStatsTable(int id, int handsWon, int handsPlayed, int blackjacks, int highMoney, int totalMoney) {
+	public static JSONObject updateStatsTable(int id, int handsWon, int handsPlayed, int blackjacks, int highMoney, int totalMoney) throws Exception {
 		Connection c = null;
 		
 		Date timeC = new Date();
@@ -406,14 +407,13 @@ public class Database {
 			pstmt.close();
 			
 			stmt.close();
-			c.commit();
-			c.close();
-			
 			obj.put("message", "Stats Successfully Updated!");
 		} catch (Exception e) {
 			System.out.println(e);
 			obj.put("error", "Stat Update Failed!");
 		}
+			c.commit();
+			c.close();
 			return obj;
 	}
 

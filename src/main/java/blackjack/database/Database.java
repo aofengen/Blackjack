@@ -437,10 +437,10 @@ public class Database {
 	}
 
 	private static Connection getConnection() throws URISyntaxException, SQLException {
-	    String dbUrl = System.getenv("JDBC_DATABASE_URL");
-		return DriverManager.getConnection(dbUrl);
-//	    return DriverManager.getConnection("jdbc:postgresql://127.0.0.1:5432/blackjack", "postgres",
-//			"9074dewberry1136");
+//	    String dbUrl = System.getenv("JDBC_DATABASE_URL");
+//		return DriverManager.getConnection(dbUrl);
+	    return DriverManager.getConnection("jdbc:postgresql://127.0.0.1:5432/blackjack", "postgres",
+			"9074dewberry1136");
 	}
 	
 	private static ResultSet findEmailInDB(String email, Statement stmt) throws SQLException {

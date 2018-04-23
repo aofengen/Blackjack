@@ -26,6 +26,7 @@ public class Database {
 		//insertIntoUserTable("Test", "x@x.com", "aofengen", "xxxxxxxx");
 //		checkUserTable("a", "b");
 //		dropUserTable();
+//		dropStatsTable();
 //		createStatsTable();
 	}
 	
@@ -108,6 +109,7 @@ public class Database {
 					"HANDSPLAYED 	 INT 		NOT NULL," +
 					"BLACKJACKS    	 INT     	NOT NULL," +
 					"MOSTMONEYWON    INT	    NOT NULL," +
+					"TOTALMONEYWON   INT        NOT NULL," +
 					"TIMECREATED    TIMESTAMP   NOT NULL," +
 					"TIMEUPDATED    TIMESTAMP   NOT NULL)";
 			stmt.executeQuery(sql);

@@ -11,7 +11,7 @@ import java.sql.Timestamp;
 import java.util.Date;
 
 import org.jasypt.util.password.StrongPasswordEncryptor;
-
+import org.json.JSONArray;
 import org.json.JSONObject;
 
 import com.auth0.jwt.JWT;
@@ -329,6 +329,54 @@ public class Database {
 			obj.put("error", "Invalid or missing token!");
 		}
 		return obj;
+	}
+	
+	public static JSONArray getTopFive() throws Exception {
+		Connection c = null;
+		int id = 0;
+		int money = 0;
+		JSONArray array = new JSONArray();
+		JSONObject obj = new JSONObject();
+		try {
+			Class.forName("org.postgresql.Driver");
+			c = getConnection();
+			System.out.println("Opened database successfully");
+			
+		} catch (Exception e) {
+			System.out.println(e);
+		}
+		
+		try {
+			Statement stmt = c.createStatement();
+			Statement stmt2 = c.createStatement();
+			ResultSet rs = stmt.executeQuery("SELECT id, mostmoneywon FROM stats ORDER BY mostmoneywon DESC LIMIT 5");
+			String name = "";
+			int i = 0;
+			while (i < 5) {
+				if (rs.next()) {
+					id = rs.getInt("id");
+					money = rs.getInt("mostmoneywon");
+					
+					ResultSet rs2 = stmt2.executeQuery("SELECT name FROM users WHERE id = " + id + ";");
+					if(rs2.next()) {
+						name = rs2.getString("name");
+					}
+					
+//					System.out.println(id + " " + name);
+					obj.put("name", name);
+					obj.put("money", money);
+				
+					array.put(i, obj);
+				}
+				i++;
+			}
+			stmt2.close();
+			stmt.close();
+		} catch (Exception e) {
+			System.out.println(e);
+		}
+		c.close();
+		return array;
 	}
 	
 	public static JSONObject getStats(int id) throws Exception {

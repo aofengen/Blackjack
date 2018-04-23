@@ -1,6 +1,7 @@
 package blackjack.controllers;
 
 import org.json.JSONObject;
+import org.json.JSONArray;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -55,6 +56,13 @@ public class BlackjackController {
     		System.out.println(e);
     	}
     	return obj.toString();
+    }
+    
+    @GetMapping("/leaderboard")
+    public String getLeaderboard() throws Exception {
+    	JSONArray array = new JSONArray();
+    	array = Database.getTopFive();
+    	return array.toString();
     }
    
     @PostMapping("/signup")

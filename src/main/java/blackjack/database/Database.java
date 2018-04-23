@@ -355,7 +355,7 @@ public class Database {
 		return obj;
 	}
 	
-	public static JSONObject updateStatsTable(int id, int handsWon, int handsPlayed, int blackjacks, int highMoney) {
+	public static JSONObject updateStatsTable(int id, int handsWon, int handsPlayed, int blackjacks, int highMoney, int totalMoney) {
 		Connection c = null;
 		
 		Date timeC = new Date();
@@ -382,25 +382,25 @@ public class Database {
 					highMoney = oldHighMoney;
 				}
 				
-				pstmt = c.prepareStatement("UPDATE STATS SET HANDSWON = ?, HANDSPLAYED = ?, BLACKJACKS = ?, MOSTMONEYWON = ?, TIMEUPDATED = ? WHERE ID = ?");
+				pstmt = c.prepareStatement("UPDATE STATS SET HANDSWON = ?, HANDSPLAYED = ?, BLACKJACKS = ?, MOSTMONEYWON = ?, TOTALMONEYWON = ?, TIMEUPDATED = ? WHERE ID = ?");
 					pstmt.setInt(1, rs.getInt("handswon") + handsWon);
 					pstmt.setInt(2, rs.getInt("handsplayed") + handsPlayed);
 					pstmt.setInt(3, rs.getInt("blackjacks") + blackjacks);
 					pstmt.setInt(4, highMoney);
-					pstmt.setTimestamp(5, tU);
-					pstmt.setInt(6, id);
+					pstmt.setInt(5, totalMoney);
+					pstmt.setTimestamp(6, tU);
+					pstmt.setInt(7, id);
 			} else {
-			pstmt = c.prepareStatement("INSERT INTO STATS (ID, HANDSWON, HANDSPLAYED, BLACKJACKS, MOSTMONEYWON, TIMECREATED, TIMEUPDATED)"
-	            + "VALUES (?, ?, ?, ?, ?, ?, ?)");
-			pstmt.setInt(1, id);
-			pstmt.setInt(2, handsWon);
-			pstmt.setInt(3, handsPlayed);
-			pstmt.setInt(4, blackjacks);
-			pstmt.setInt(5, highMoney);
-			pstmt.setTimestamp(6, tC);
-			pstmt.setTimestamp(7, tU);
-			
-			
+				pstmt = c.prepareStatement("INSERT INTO STATS (ID, HANDSWON, HANDSPLAYED, BLACKJACKS, MOSTMONEYWON, TOTALMONEYWON, TIMECREATED, TIMEUPDATED)"
+		            + "VALUES (?, ?, ?, ?, ?, ?, ?, ?)");
+				pstmt.setInt(1, id);
+				pstmt.setInt(2, handsWon);
+				pstmt.setInt(3, handsPlayed);
+				pstmt.setInt(4, blackjacks);
+				pstmt.setInt(5, highMoney);
+				pstmt.setInt(6, totalMoney);
+				pstmt.setTimestamp(7, tC);
+				pstmt.setTimestamp(8, tU);	
 			}
 			pstmt.executeUpdate();
 			pstmt.close();
@@ -437,10 +437,10 @@ public class Database {
 	}
 
 	private static Connection getConnection() throws URISyntaxException, SQLException {
-	    String dbUrl = System.getenv("JDBC_DATABASE_URL");
-		return DriverManager.getConnection(dbUrl);
-//	    return DriverManager.getConnection("jdbc:postgresql://127.0.0.1:5432/blackjack", "postgres",
-//			"9074dewberry1136");
+//	    String dbUrl = System.getenv("JDBC_DATABASE_URL");
+//		return DriverManager.getConnection(dbUrl);
+	    return DriverManager.getConnection("jdbc:postgresql://127.0.0.1:5432/blackjack", "postgres",
+			"9074dewberry1136");
 	}
 	
 	private static ResultSet findEmailInDB(String email, Statement stmt) throws SQLException {

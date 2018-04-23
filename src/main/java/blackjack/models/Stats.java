@@ -1,13 +1,14 @@
 package blackjack.models;
 
 public class Stats {
-	private int handsPlayed, handsWon, blackjacks, highMoney;
+	private int handsPlayed, handsWon, blackjacks, highMoney, totalMoney;
 	
 	public Stats() {
 		this.handsPlayed = 0;
 		this.handsWon = 0;
 		this.blackjacks = 0;
 		this.highMoney = 0;
+		this.totalMoney = 0;
 	}
 	
 	public int getHandsPlayed() {
@@ -40,5 +41,13 @@ public class Stats {
 	
 	public void setHighMoney(int hM) {
 		this.highMoney = hM;
+	}
+	
+	public int getTotalMoney() {
+		return this.totalMoney;
+	}
+	
+	public void setTotalMoney(int tM) {
+		this.totalMoney = tM;
 	}
 }

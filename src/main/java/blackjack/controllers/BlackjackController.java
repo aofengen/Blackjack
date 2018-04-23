@@ -168,8 +168,8 @@ public class BlackjackController {
 	    	int handsPlayed = stats.getHandsPlayed();
 	    	int blackjacks = stats.getBlackjacks();
 	    	int highMoney = stats.getHighMoney();
-	    	
-    		obj = Database.updateStatsTable(id, handsWon, handsPlayed, blackjacks, highMoney);
+	    	int totalMoney = stats.getTotalMoney();
+    		obj = Database.updateStatsTable(id, handsWon, handsPlayed, blackjacks, highMoney, totalMoney);
     	} catch (Exception e) {
     		System.out.println(e);
     	}

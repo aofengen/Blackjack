@@ -42,6 +42,12 @@ public class BlackjackController {
     
     @GetMapping("/stats/{id}")
     public String getStats(@PathVariable(name = "id") int id) throws Exception {
+    	try {
+    		Database.createStatsTable();
+    	} catch (Exception e) {
+    		System.out.println(e);
+    	}
+    	
     	JSONObject obj = new JSONObject();
     	try {
 	    	obj = Database.getStats(id);
@@ -149,16 +155,24 @@ public class BlackjackController {
     
     @PostMapping("/stats/{id}")
     public String postStats(@PathVariable(name = "id") int id, @RequestBody Stats stats) throws Exception {
+    	try {
+    		Database.createStatsTable();
+    	} catch (Exception e) {
+    		System.out.println(e);
+    	}
+    	
     	JSONObject obj = new JSONObject();
     	
-    	int handsWon = stats.getHandsWon();
-    	int handsPlayed = stats.getHandsPlayed();
-    	int blackjacks = stats.getBlackjacks();
-    	int highMoney = stats.getHighMoney();
-    	
-//    	obj.put("message", "post worked");
-    	obj = Database.updateStatsTable(id, handsWon, handsPlayed, blackjacks, highMoney);
-    	
+    	try {
+	    	int handsWon = stats.getHandsWon();
+	    	int handsPlayed = stats.getHandsPlayed();
+	    	int blackjacks = stats.getBlackjacks();
+	    	int highMoney = stats.getHighMoney();
+	    	
+    		obj = Database.updateStatsTable(id, handsWon, handsPlayed, blackjacks, highMoney);
+    	} catch (Exception e) {
+    		System.out.println(e);
+    	}
     	return obj.toString();
     }
     

@@ -350,8 +350,8 @@ public class Database {
 			Statement stmt2 = c.createStatement();
 			ResultSet rs = stmt.executeQuery("SELECT id, mostmoneywon FROM stats ORDER BY mostmoneywon DESC LIMIT 5");
 			String name = "";
-			int i = 0;
-			while (i < 5) {
+			int i = 1;
+			while (i < 6) {
 				if (rs.next()) {
 					id = rs.getInt("id");
 					money = rs.getInt("mostmoneywon");
@@ -369,7 +369,7 @@ public class Database {
 						obj.remove("money");
 
 					}
-
+					obj.put("place", i);
 					obj.put("name", name);
 					obj.put("money", money);
 					array.put(i, obj);

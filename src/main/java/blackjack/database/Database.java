@@ -333,8 +333,6 @@ public class Database {
 	
 	public static JSONArray getTopFive() throws Exception {
 		Connection c = null;
-		int id = 0;
-		int money = 0;
 		JSONArray array = new JSONArray();
 		try {
 			Class.forName("org.postgresql.Driver");
@@ -348,30 +346,27 @@ public class Database {
 		try {
 			Statement stmt = c.createStatement();
 			Statement stmt2 = c.createStatement();
-			ResultSet rs = stmt.executeQuery("SELECT id, mostmoneywon FROM stats ORDER BY mostmoneywon DESC LIMIT 5");
-			String name = "";
+			ResultSet rs = stmt.executeQuery("SELECT * FROM stats ORDER BY mostmoneywon DESC LIMIT 5");
 			int i = 0;
 			while (i < 5) {
 				if (rs.next()) {
-					id = rs.getInt("id");
-					money = rs.getInt("mostmoneywon");
+					int id = rs.getInt("id");
+					int money = rs.getInt("mostmoneywon");
+					int handsWon = rs.getInt("handswon");
+					int handsPlayed = rs.getInt("handsplayed");
 					
 					ResultSet rs2 = stmt2.executeQuery("SELECT name FROM users WHERE id = " + id + ";");
+					String name = "";
 					if(rs2.next()) {
 						name = rs2.getString("name");
 					}
 					JSONObject obj = new JSONObject();
-					System.out.println(id + " " + name);
-					if (obj.has("name")) {
-						obj.remove("name");
-					}
-					if (obj.has("money")) {
-						obj.remove("money");
-
-					}
+					
 					obj.put("place", i + 1);
 					obj.put("name", name);
 					obj.put("money", money);
+					obj.put("handswon", handsWon);
+					obj.put("handsplayed", handsPlayed);
 					array.put(i, obj);
 				}
 				

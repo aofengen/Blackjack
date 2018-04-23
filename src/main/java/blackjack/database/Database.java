@@ -442,7 +442,7 @@ public class Database {
 					pstmt.setInt(2, rs.getInt("handsplayed") + handsPlayed);
 					pstmt.setInt(3, rs.getInt("blackjacks") + blackjacks);
 					pstmt.setInt(4, highMoney);
-					pstmt.setInt(5, totalMoney);
+					pstmt.setInt(5, rs.getInt("totalmoney") + totalMoney);
 					pstmt.setTimestamp(6, tU);
 					pstmt.setInt(7, id);
 			} else {

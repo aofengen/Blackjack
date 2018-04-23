@@ -362,12 +362,11 @@ public class Database {
 						name = rs2.getString("name");
 					}
 					
-//					System.out.println(id + " " + name);
+					System.out.println(id + " " + name);
 					obj.put("name", name);
 					obj.put("money", money);
-				
-					array.put(i, obj);
 				}
+				array.put(i, obj);
 				i++;
 			}
 			stmt2.close();

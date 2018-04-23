@@ -363,10 +363,19 @@ public class Database {
 					}
 					
 					System.out.println(id + " " + name);
+					if (obj.has("name")) {
+						obj.remove("name");
+					}
+					if (obj.has("money")) {
+						obj.remove("money");
+
+					}
+
 					obj.put("name", name);
 					obj.put("money", money);
+					array.put(i, obj);
 				}
-				array.put(i, obj);
+				
 				i++;
 			}
 			stmt2.close();

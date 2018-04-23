@@ -336,7 +336,6 @@ public class Database {
 		int id = 0;
 		int money = 0;
 		JSONArray array = new JSONArray();
-		JSONObject obj = new JSONObject();
 		try {
 			Class.forName("org.postgresql.Driver");
 			c = getConnection();
@@ -361,7 +360,7 @@ public class Database {
 					if(rs2.next()) {
 						name = rs2.getString("name");
 					}
-					
+					JSONObject obj = new JSONObject();
 					System.out.println(id + " " + name);
 					if (obj.has("name")) {
 						obj.remove("name");

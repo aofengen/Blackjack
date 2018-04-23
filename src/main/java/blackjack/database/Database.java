@@ -337,7 +337,6 @@ public class Database {
 		try {
 			Class.forName("org.postgresql.Driver");
 			c = getConnection();
-			c.setAutoCommit(false);
 			System.out.println("Opened database successfully");
 			
 			Statement stmt = c.createStatement();
@@ -349,6 +348,7 @@ public class Database {
 				obj.put("Blackjacks", rs.getInt("blackjacks"));
 				obj.put("Most Money Won", rs.getInt("mostmoneywon"));
 			}
+			c.close();
 		} catch (Exception e) {
 			System.out.println(e);
 		}

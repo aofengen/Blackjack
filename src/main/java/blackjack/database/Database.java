@@ -331,7 +331,7 @@ public class Database {
 		return obj;
 	}
 	
-	public static JSONArray getTopFive() throws Exception {
+	public static JSONArray getTopTen() throws Exception {
 		Connection c = null;
 		JSONArray array = new JSONArray();
 		try {
@@ -346,7 +346,7 @@ public class Database {
 		try {
 			Statement stmt = c.createStatement();
 			Statement stmt2 = c.createStatement();
-			ResultSet rs = stmt.executeQuery("SELECT * FROM stats ORDER BY mostmoneywon DESC LIMIT 5");
+			ResultSet rs = stmt.executeQuery("SELECT * FROM stats ORDER BY mostmoneywon DESC LIMIT 10");
 			int i = 0;
 			while (i < 5) {
 				if (rs.next()) {

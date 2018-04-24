@@ -61,7 +61,7 @@ public class BlackjackController {
     @GetMapping("/leaderboard")
     public String getLeaderboard() throws Exception {
     	JSONArray array = new JSONArray();
-    	array = Database.getTopFive();
+    	array = Database.getTopTen();
     	return array.toString();
     }
    

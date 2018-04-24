@@ -348,7 +348,7 @@ public class Database {
 			Statement stmt2 = c.createStatement();
 			ResultSet rs = stmt.executeQuery("SELECT * FROM stats ORDER BY mostmoneywon DESC LIMIT 10");
 			int i = 0;
-			while (i < 5) {
+			while (i < 10) {
 				if (rs.next()) {
 					int id = rs.getInt("id");
 					int money = rs.getInt("mostmoneywon");

@@ -402,6 +402,7 @@ public class Database {
 				obj.put("handsplayed", rs.getInt("handsplayed"));
 				obj.put("blackjacks", rs.getInt("blackjacks"));
 				obj.put("mostmoneywon", rs.getInt("mostmoneywon"));
+				obj.put("totalmoneywon", rs.getInt("totalmoneywon"));
 			}
 			
 		} catch (Exception e) {

@@ -387,13 +387,14 @@ public class Database {
 	
 	public static JSONObject getStats(int id) throws Exception {
 		Connection c = null;
+		Statement stmt = null;
 		JSONObject obj = new JSONObject();
 		try {
 			Class.forName("org.postgresql.Driver");
 			c = getConnection();
 			System.out.println("Opened database successfully");
 			
-			Statement stmt = c.createStatement();
+			stmt = c.createStatement();
 			ResultSet rs = stmt.executeQuery("SELECT * FROM stats WHERE id = '" + id + "';");
 			
 			if (rs.next()) {
@@ -405,7 +406,9 @@ public class Database {
 			
 		} catch (Exception e) {
 			System.out.println(e);
+			obj.put("error", "Unable to get stats: " + e.toString());
 		}
+		stmt.close();
 		c.close();
 		return obj;
 	}

@@ -442,7 +442,7 @@ public class Database {
 					pstmt.setInt(2, rs.getInt("handsplayed") + handsPlayed);
 					pstmt.setInt(3, rs.getInt("blackjacks") + blackjacks);
 					pstmt.setInt(4, highMoney);
-					pstmt.setInt(5, rs.getInt("totalmoney") + totalMoney);
+					pstmt.setInt(5, rs.getInt("totalmoneywon") + totalMoney);
 					pstmt.setTimestamp(6, tU);
 					pstmt.setInt(7, id);
 			} else {
@@ -464,7 +464,7 @@ public class Database {
 			obj.put("message", "Stats Successfully Updated!");
 		} catch (Exception e) {
 			System.out.println(e);
-			obj.put("error", "Stat Update Failed!");
+			obj.put("error", "Stat Update Failed! " + e.toString());
 		}
 			c.commit();
 			c.close();

@@ -87,11 +87,12 @@ public class Database {
 					"TIMEUPDATED    TIMESTAMP   NOT NULL)";
 			stmt.executeQuery(sql);
 			stmt.close();
-			c.close();
+			
 		} catch (Exception e) {
 			System.err.println( e.getClass().getName() + ": " + e.getMessage());
 		}
 		System.out.println("Users table created successfully");
+		c.close();
 	}
 	
 	public static void createStatsTable() throws Exception {
@@ -114,14 +115,14 @@ public class Database {
 					"TIMEUPDATED    TIMESTAMP   NOT NULL)";
 			stmt.executeQuery(sql);
 			stmt.close();
-			c.close();
 		} catch (Exception e) {
 			System.err.println( e.getClass().getName() + ": " + e.getMessage());
 		}
 		System.out.println("Stats table created successfully");
+		c.close();
 	}
 
-	public static JSONObject signup(String name, String email, String username, String password) {
+	public static JSONObject signup(String name, String email, String username, String password) throws Exception {
 		Connection c = null;
 		int id = 0;
 		
@@ -162,8 +163,6 @@ public class Database {
 			
 			pstmt.executeUpdate();
 			pstmt.close();
-			c.commit();
-			c.close();
 			
 			obj.put("id", id);
 			obj.put("name", name);
@@ -187,6 +186,9 @@ public class Database {
 			System.out.println(e);
 		}
 		
+		c.commit();
+		c.close();
+		
 		return obj;
 	}
 
@@ -196,7 +198,7 @@ public class Database {
 		return encryptedPassword;
 	}
 
-	public static JSONObject login(String email, String password) {
+	public static JSONObject login(String email, String password) throws Exception {
 		Connection c = null;
 		Statement stmt = null;
 
@@ -217,12 +219,12 @@ public class Database {
 			} else {
 				message.put("error", "Invalid Login Attempt");
 			}
-
-			stmt.close();
-			c.close();
 		} catch (Exception e) {
 			System.out.println(e);
 		}
+		
+		stmt.close();
+		c.close();
 		return message;
 	}
 	
@@ -266,9 +268,6 @@ public class Database {
 				System.out.println(e);
 			}
 			
-			c.commit();
-			c.close();
-			
 			obj.put("id", id);
 			obj.put("New Name", newName);
 			obj.put("New Email", newEmail);
@@ -277,6 +276,9 @@ public class Database {
 		} else {
 			obj.put("error", "Invalid or missing token!");
 		}
+		c.commit();
+		c.close();
+		
 		return obj;
 	}
 	
@@ -322,12 +324,12 @@ public class Database {
 			} catch (Exception e) {
 				System.out.println(e);
 			}
-			c.commit();
-			c.close();
-			
 		} else {
 			obj.put("error", "Invalid or missing token!");
 		}
+		c.commit();
+		c.close();
+		
 		return obj;
 	}
 	
@@ -465,12 +467,13 @@ public class Database {
 			pstmt.close();
 			
 			stmt.close();
+			c.commit();
 			obj.put("message", "Stats Successfully Updated!");
 		} catch (Exception e) {
 			System.out.println(e);
 			obj.put("error", "Stat Update Failed! " + e.toString());
 		}
-			c.commit();
+			
 			c.close();
 			return obj;
 	}

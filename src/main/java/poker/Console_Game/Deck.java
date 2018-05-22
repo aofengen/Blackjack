@@ -132,6 +132,11 @@ public class Deck {
 		while(i < this.cards.size()) {
 			System.out.println("");
 			System.out.println("Would you like to keep " + this.getCard(i) + "? (1) yes or (2) no");
+			while(!sc.hasNextInt()) {
+				System.out.println("Invalid Response.");
+				System.out.println("Would you like to keep " + this.getCard(i) + "? (1) yes or (2) no");
+				sc.nextLine();
+			}
 			int choice = sc.nextInt();
 			switch (choice) {
 				case 1:

@@ -14,14 +14,17 @@ public class Game {
 	}
 	
 	public static void game(Scanner sc) {		
-		double playerMoney = 100.00;
+		double playerMoney = 50.00;
 		
 		while (playerMoney > 0) {
+//			playerDeck.resetOptions();
 			double playerBet = getBet(playerMoney, sc);
+			playerMoney -= playerBet;
+			System.out.println("After bet: " + playerMoney);
 			
 			Deck mainDeck = new Deck();
 			mainDeck.createDeck();
-	
+			
 			Deck playerDeck = new Deck();
 			playerDeck.draw(mainDeck, 5);
 			
@@ -30,8 +33,9 @@ public class Game {
 			System.out.println("Your hand is now: " + playerDeck.cards);
 			
 			playerDeck.setWinner(checkValue(playerDeck));
-//			System.out.println(playerDeck.getWinner());
+			System.out.println(playerDeck.getWinner());
 			playerMoney = handleMoney(playerDeck.getWinner(), playerMoney, playerBet);
+//			System.out.println("After hand: " + playerMoney);
 		}
 		endGame(sc);
 	}
@@ -41,6 +45,11 @@ public class Game {
 		while (gameOver == false) {
 			String again = "Would you like to play again? (1) yes or (2) no.";
 			System.out.println("You ran out of money! " + again);
+			while(!sc.hasNextInt()) {
+				System.out.println("Invalid Response. " + again);
+				sc.nextLine();
+			}
+			
 			int response = sc.nextInt();
 			
 			if (response == 1) {
@@ -53,6 +62,7 @@ public class Game {
 				System.out.println("Invalid Response. " + again);
 			}
 		}
+		if (gameOver != true) endGame(sc);
 		return;
 	}
 
@@ -66,28 +76,25 @@ public class Game {
 				pMoney += pBet * 100;
 				break;
 			case "four of a kind":
-				pMoney += pBet * 50;
+				pMoney += pBet * 40;
 				break;
 			case "full house":
-				pMoney += pBet * 30;
-				break;
-			case "flush":
 				pMoney += pBet * 20;
 				break;
+			case "flush":
+				pMoney += pBet * 10;
+				break;
 			case "straight":
-				pMoney += pBet * 12;
+				pMoney += pBet * 8;
 				break;
 			case "three of a kind":
-				pMoney += pBet * 6;
+				pMoney += pBet * 4;
 				break;
 			case "two pair":
-				pMoney += pBet * 3;
+				pMoney += pBet * 2;
 				break;
 			case "one pair":
 				pMoney += pBet;
-				break;
-			case "nothing":
-				pMoney -= pBet;
 				break;
 			default:
 				break;
@@ -99,17 +106,28 @@ public class Game {
 		boolean validBet = false;
 		double pBet = 0;
 		while(!validBet) {
+			
 			System.out.println("");
 			System.out.println("You have $" + pMoney + ". How much would you like to bet?");
 			System.out.println("Max bet is $5.");
+			while(!sc.hasNextDouble()) {
+				System.out.println("Invalid Response.");
+				System.out.println("You have $" + pMoney + ". How much would you like to bet?");
+				System.out.println("Max bet is $5.");
+				sc.nextLine();
+			}
 			pBet = sc.nextDouble();
-			if (pMoney >= pBet) {
+			if (pMoney < pBet) {
+				System.out.println("You cannot bet more money than you currently have.");
+			} else if (pBet < 1 || pBet > 5) {
+				if (pBet > 5) {
+					System.out.println("You cannot bet more than the maximum of $5.");
+				} else {
+					System.out.println("You must bet at least $1.");
+				}
+			} else {
 				validBet = true;
 				return pBet;
-			} else if (pBet > 1) {
-				System.out.println("You must bet at least 1 dollar.");
-			} else {
-				System.out.println("You cannot bet more money than you currently have.");
 			}
 		}
 		return pBet;
@@ -124,18 +142,22 @@ public class Game {
 
 		ArrayList<Suit> suits = new ArrayList<Suit>();
 		ArrayList<Value> values = new ArrayList<Value>();
-		
+				
 		for (Card aCard : tmpDeck.cards) {
 			suits.add(aCard.getSuit());
 			values.add(aCard.getValue());
 		}
 		
 		ArrayList<Integer> cards = new ArrayList<Integer>();
+		System.out.println("test line 139");
 		cards = getValues(values);
+		System.out.println("test line 141");
 		
 		boolean flush = checkFlush(suits);
 		boolean straight = checkStraight(cards);
 		String pair = checkPair(values);
+		
+		System.out.println("flush: " + flush + ", straight: " + straight + ", pair: " + pair);
 		
 		if (flush == true) {
 			if (straight == true) {
@@ -174,7 +196,7 @@ public class Game {
 				case JACK: num=11; break;
 				case QUEEN: num=12; break;
 				case KING: num=13; break;
-				case ACE: num=0; break;
+				case ACE: num=1; break;
 				default: break;
 			}
 			
@@ -192,10 +214,13 @@ public class Game {
 				}
 			}
 		}
- 		
-		while (numbers.contains(0)) {
-			if (numbers.contains(13)) {
-				int index = numbers.indexOf(0);
+		
+		while (numbers.contains(1)) {
+			System.out.println("testing ace");
+			if (numbers.contains(2) && numbers.contains(3) && numbers.contains(4) && numbers.contains(5)) {
+				break;
+			} else {
+				int index = numbers.indexOf(1);
 				numbers.remove(index);
 				numbers.add(14);
 			}

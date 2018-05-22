@@ -22,11 +22,11 @@ import org.json.JSONObject;
 public class BlackjackDatabase {
 	
 	public static void main(String[] args) throws Exception {
-//		dropStatsTable();
+//		dropBlackjackStatsTable();
 //		createBlackjackStatsTable();
 	}
 	
-//	private static void dropStatsTable() throws Exception {
+//	private static void dropBlackjackStatsTable() throws Exception {
 //	Connection c = null;
 //	Statement stmt = null;
 //	try {
@@ -35,14 +35,14 @@ public class BlackjackDatabase {
 //		System.out.println("Opened database successfully");
 //		
 //		stmt = c.createStatement();
-//		String sql = "DROP TABLE STATS";
+//		String sql = "DROP TABLE BLACKJACKSTATS";
 //		stmt.executeQuery(sql);
 //		stmt.close();
 //		c.close();
 //	} catch (Exception e) {
 //		System.err.println( e.getClass().getName() + ": " + e.getMessage());
 //	}
-//	System.out.println("Table dropped successfully");
+//	System.out.println("Blackjack stats table dropped successfully");
 //}
 	
 	public static void createBlackjackStatsTable() throws Exception {
@@ -54,7 +54,7 @@ public class BlackjackDatabase {
 			System.out.println("Opened database successfully");
 			
 			stmt = c.createStatement();
-			String sql = "CREATE TABLE STATS " +
+			String sql = "CREATE TABLE BLACKJACKSTATS " +
 					"(ID INT PRIMARY KEY 		NOT NULL," +
 					"HANDSWON		 INT	    NOT NULL," +
 					"HANDSPLAYED 	 INT 		NOT NULL," +
@@ -68,7 +68,7 @@ public class BlackjackDatabase {
 		} catch (Exception e) {
 			System.err.println( e.getClass().getName() + ": " + e.getMessage());
 		}
-		System.out.println("Stats table created successfully");
+		System.out.println("Blackjack stats table created successfully");
 		c.close();
 	}
 	
@@ -94,7 +94,7 @@ public class BlackjackDatabase {
 		try {
 			Statement stmt = c.createStatement();
 			Statement stmt2 = c.createStatement();
-			ResultSet rs = stmt.executeQuery("SELECT * FROM stats ORDER BY mostmoneywon DESC LIMIT 10");
+			ResultSet rs = stmt.executeQuery("SELECT * FROM blackjackstats ORDER BY mostmoneywon DESC LIMIT 10");
 			int i = 0;
 			while (i < 10) {
 				if (rs.next()) {
@@ -143,7 +143,7 @@ public class BlackjackDatabase {
 			System.out.println("Opened database successfully");
 			
 			stmt = c.createStatement();
-			ResultSet rs = stmt.executeQuery("SELECT * FROM stats WHERE id = '" + id + "';");
+			ResultSet rs = stmt.executeQuery("SELECT * FROM blackjackstats WHERE id = '" + id + "';");
 			
 			if (rs.next()) {
 				obj.put("handswon", rs.getInt("handswon"));
@@ -180,7 +180,7 @@ public class BlackjackDatabase {
 			
 			PreparedStatement pstmt = null;
 			Statement stmt = c.createStatement();
-			ResultSet rs = stmt.executeQuery("SELECT * FROM stats WHERE id = '" + id + "';");
+			ResultSet rs = stmt.executeQuery("SELECT * FROM blackjackstats WHERE id = '" + id + "';");
 			
 			if (rs.next()) {
 				System.out.println("record exists. updating.");
@@ -189,7 +189,7 @@ public class BlackjackDatabase {
 					highMoney = oldHighMoney;
 				}
 				
-				pstmt = c.prepareStatement("UPDATE STATS SET HANDSWON = ?, HANDSPLAYED = ?, BLACKJACKS = ?, MOSTMONEYWON = ?, TOTALMONEYWON = ?, TIMEUPDATED = ? WHERE ID = ?");
+				pstmt = c.prepareStatement("UPDATE BLACKJACKSTATS SET HANDSWON = ?, HANDSPLAYED = ?, BLACKJACKS = ?, MOSTMONEYWON = ?, TOTALMONEYWON = ?, TIMEUPDATED = ? WHERE ID = ?");
 					pstmt.setInt(1, rs.getInt("handswon") + handsWon);
 					pstmt.setInt(2, rs.getInt("handsplayed") + handsPlayed);
 					pstmt.setInt(3, rs.getInt("blackjacks") + blackjacks);
@@ -198,7 +198,7 @@ public class BlackjackDatabase {
 					pstmt.setTimestamp(6, tU);
 					pstmt.setInt(7, id);
 			} else {
-				pstmt = c.prepareStatement("INSERT INTO STATS (ID, HANDSWON, HANDSPLAYED, BLACKJACKS, MOSTMONEYWON, TOTALMONEYWON, TIMECREATED, TIMEUPDATED)"
+				pstmt = c.prepareStatement("INSERT INTO BLACKJACKSTATS (ID, HANDSWON, HANDSPLAYED, BLACKJACKS, MOSTMONEYWON, TOTALMONEYWON, TIMECREATED, TIMEUPDATED)"
 		            + "VALUES (?, ?, ?, ?, ?, ?, ?, ?)");
 				pstmt.setInt(1, id);
 				pstmt.setInt(2, handsWon);
@@ -214,7 +214,7 @@ public class BlackjackDatabase {
 			
 			stmt.close();
 			c.commit();
-			obj.put("message", "Stats Successfully Updated!");
+			obj.put("message", "Blackjack stats Successfully Updated!");
 		} catch (Exception e) {
 			System.out.println(e);
 			obj.put("error", "Stat Update Failed! " + e.toString());

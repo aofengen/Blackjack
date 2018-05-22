@@ -22,7 +22,7 @@ import org.json.JSONObject;
 public class PokerDatabase {
 
 public static void main(String[] args) throws Exception {
-//		createVideoPokerStatsTable();
+		createVideoPokerStatsTable();
 	}
 
 private static Connection getConnection() throws URISyntaxException, SQLException {
@@ -31,6 +31,26 @@ private static Connection getConnection() throws URISyntaxException, SQLExceptio
     return DriverManager.getConnection("jdbc:postgresql://127.0.0.1:5432/blackjack", "postgres",
 		"9074dewberry1136");
 }
+
+//private static void dropVideoPokerStatsTable() throws Exception {
+//Connection c = null;
+//Statement stmt = null;
+//try {
+//	Class.forName("org.postgresql.Driver");
+//	c = getConnection();
+//	System.out.println("Opened database successfully");
+//	
+//	stmt = c.createStatement();
+//	String sql = "DROP TABLE VIDEOPOKERSTATS";
+//	stmt.executeQuery(sql);
+//	stmt.close();
+//	c.close();
+//} catch (Exception e) {
+//	System.err.println( e.getClass().getName() + ": " + e.getMessage());
+//}
+//System.out.println("Video Poker stats table dropped successfully");
+//}
+
 
 public static void createVideoPokerStatsTable() throws Exception {
 	Connection c = null;
@@ -41,13 +61,18 @@ public static void createVideoPokerStatsTable() throws Exception {
 		System.out.println("Opened database successfully");
 		
 		stmt = c.createStatement();
-		String sql = "CREATE TABLE STATS " +
+		String sql = "CREATE TABLE VIDEOPOKERSTATS " +
 				"(ID INT PRIMARY KEY 		NOT NULL," +
-				"HANDSWON		 INT	    NOT NULL," +
+				"HIGHMONEY		 INT	    NOT NULL," +
+				"TOTALMONEY		 INT	    NOT NULL," +
 				"HANDSPLAYED 	 INT 		NOT NULL," +
-				"BLACKJACKS    	 INT     	NOT NULL," +
-				"MOSTMONEYWON    INT	    NOT NULL," +
-				"TOTALMONEYWON   INT        NOT NULL," +
+				"HANDSWON		 INT	    NOT NULL," +
+				"ROYALFLUSH    	 INT     	NOT NULL," +
+				"STRAIGHTFLUSH   INT	    NOT NULL," +
+				"FOURKIND	     INT        NOT NULL," +
+				"FLUSH			 INT	    NOT NULL," +
+				"STRAIGHT		 INT	    NOT NULL," +
+				"THREEKIND		 INT	    NOT NULL," +
 				"TIMECREATED    TIMESTAMP   NOT NULL," +
 				"TIMEUPDATED    TIMESTAMP   NOT NULL)";
 		stmt.executeQuery(sql);
@@ -55,13 +80,14 @@ public static void createVideoPokerStatsTable() throws Exception {
 	} catch (Exception e) {
 		System.err.println( e.getClass().getName() + ": " + e.getMessage());
 	}
-	System.out.println("Stats table created successfully");
+	System.out.println("Video Poker stats table created successfully");
 	c.close();
 }
 
-//public static JSONArray getTopTen() throws Exception {
+public static JSONArray getTopTen() throws Exception {
+	
 //	Connection c = null;
-//	JSONArray array = new JSONArray();
+	JSONArray array = new JSONArray();
 //	try {
 //		Class.forName("org.postgresql.Driver");
 //		c = getConnection();
@@ -110,13 +136,13 @@ public static void createVideoPokerStatsTable() throws Exception {
 //		System.out.println(e);
 //	}
 //	c.close();
-//	return array;
-//}
+	return array;
+}
 //
-//public static JSONObject getStats(int id) throws Exception {
-//	Connection c = null;
+public static JSONObject getStats(int id) throws Exception {
+	Connection c = null;
 //	Statement stmt = null;
-//	JSONObject obj = new JSONObject();
+	JSONObject obj = new JSONObject();
 //	try {
 //		Class.forName("org.postgresql.Driver");
 //		c = getConnection();
@@ -139,19 +165,19 @@ public static void createVideoPokerStatsTable() throws Exception {
 //	}
 //	stmt.close();
 //	c.close();
-//	return obj;
-//}
-//
-//public static JSONObject updateStatsTable(int id, int handsWon, int handsPlayed, int blackjacks, int highMoney, int totalMoney) throws Exception {
-//	Connection c = null;
-//	
-//	Date timeC = new Date();
-//	Date timeU = new Date();
-//	
-//	java.sql.Timestamp tC = new Timestamp(timeC.getTime());
-//	java.sql.Timestamp tU = new Timestamp(timeU.getTime());
-//	
-//	JSONObject obj = new JSONObject();
+	return obj;
+}
+
+public static JSONObject updateStatsTable(int id, int handsWon, int handsPlayed, int blackjacks, int highMoney, int totalMoney) throws Exception {
+	Connection c = null;
+	
+	Date timeC = new Date();
+	Date timeU = new Date();
+	
+	java.sql.Timestamp tC = new Timestamp(timeC.getTime());
+	java.sql.Timestamp tU = new Timestamp(timeU.getTime());
+	
+	JSONObject obj = new JSONObject();
 //	try {
 //		Class.forName("org.postgresql.Driver");
 //		c = getConnection();
@@ -201,7 +227,7 @@ public static void createVideoPokerStatsTable() throws Exception {
 //	}
 //		
 //		c.close();
-//		return obj;
-//}
+		return obj;
+}
 	
 }

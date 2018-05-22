@@ -4,6 +4,9 @@ import java.util.ArrayList;
 import java.util.Random;
 import java.util.Scanner;
 
+import org.json.JSONArray;
+import org.json.JSONObject;
+
 public class Deck {
 	
 	ArrayList<Card> cards;
@@ -162,5 +165,27 @@ public class Deck {
 			System.out.println("You didn't trade in any cards.");
 			System.out.println("");
 		}
+	}
+	
+	public String cardValue(int i) {
+		String x = this.getCard(i).getValue().toString();
+		return x;
+	}
+	
+	public String cardSuit(int i) {
+		String x = this.getCard(i).getSuit().toString();
+		return x;
+	}
+	
+	public JSONArray deckToJSON() throws Exception {
+		JSONArray array = new JSONArray();
+    	while(this.deckSize() > 0) {
+    		JSONObject childObject = new JSONObject();
+    		childObject.put("suit", this.cardSuit(0));
+    		childObject.put("value", this.cardValue(0));
+    		this.removeCard(0);
+    		array.put(childObject);
+    	}
+		return array;
 	}
 }

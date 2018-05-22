@@ -7,10 +7,9 @@ import org.springframework.web.bind.annotation.GetMapping;
 //import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
-//import blackjack.Console_Game.*;
-//import blackjack.database.*;
-//import blackjack.models.*;
-import poker.Console_Game.*;
+import poker.video_poker.*;
+import models.PokerStats;
+import database.PokerDatabase;
 
 @CrossOrigin
 @RestController

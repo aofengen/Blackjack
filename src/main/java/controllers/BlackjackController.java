@@ -9,10 +9,9 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
-import blackjack.Console_Game.*;
-import blackjack.database.*;
-import blackjack.models.*;
-import users.database.UserDatabase;
+import blackjack.*;
+import models.BlackjackStats;
+import database.BlackjackDatabase;
 
 
 @CrossOrigin
@@ -45,7 +44,7 @@ public class BlackjackController {
     @GetMapping("/blackjack/stats/{id}")
     public String getStats(@PathVariable(name = "id") int id) throws Exception {
     	try {
-    		UserDatabase.createStatsTable();
+    		BlackjackDatabase.createBlackjackStatsTable();
     	} catch (Exception e) {
     		System.out.println(e);
     	}
@@ -67,9 +66,9 @@ public class BlackjackController {
     }
        
     @PostMapping("/blackjack/stats/{id}")
-    public String postStats(@PathVariable(name = "id") int id, @RequestBody Stats stats) throws Exception {
+    public String postStats(@PathVariable(name = "id") int id, @RequestBody BlackjackStats stats) throws Exception {
     	try {
-    		UserDatabase.createStatsTable();
+    		BlackjackDatabase.createBlackjackStatsTable();
     	} catch (Exception e) {
     		System.out.println(e);
     	}

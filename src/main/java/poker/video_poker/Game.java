@@ -1,4 +1,4 @@
-package poker.Console_Game;
+package poker.video_poker;
 
 import java.util.ArrayList;
 import java.util.Scanner;

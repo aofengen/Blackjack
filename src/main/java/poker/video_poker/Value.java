@@ -1,4 +1,4 @@
-package blackjack.Console_Game;
+package poker.video_poker;
 
 public enum Value {
 TWO, THREE, FOUR, FIVE, SIX, SEVEN, EIGHT, NINE, TEN, JACK, QUEEN, KING, ACE

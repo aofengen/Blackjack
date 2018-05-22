@@ -1,4 +1,4 @@
-package blackjack.models;
+package models;
 
 public class Login {
 	private String email = "";

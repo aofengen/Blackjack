@@ -1,4 +1,4 @@
-package users.database;
+package database;
 
 import java.net.URISyntaxException;
 import java.sql.Connection;
@@ -26,8 +26,6 @@ public class UserDatabase {
 		//insertIntoUserTable("Test", "x@x.com", "aofengen", "xxxxxxxx");
 //		checkUserTable("a", "b");
 //		dropUserTable();
-//		dropStatsTable();
-//		createStatsTable();
 	}
 	
 //	private static void dropUserTable() throws Exception {
@@ -48,25 +46,6 @@ public class UserDatabase {
 //		}
 //		System.out.println("Table dropped successfully");
 //	}
-	
-//	private static void dropStatsTable() throws Exception {
-//	Connection c = null;
-//	Statement stmt = null;
-//	try {
-//		Class.forName("org.postgresql.Driver");
-//		c = getConnection();
-//		System.out.println("Opened database successfully");
-//		
-//		stmt = c.createStatement();
-//		String sql = "DROP TABLE STATS";
-//		stmt.executeQuery(sql);
-//		stmt.close();
-//		c.close();
-//	} catch (Exception e) {
-//		System.err.println( e.getClass().getName() + ": " + e.getMessage());
-//	}
-//	System.out.println("Table dropped successfully");
-//}
 	
 	public static void createUserTable() throws Exception {
 		Connection c = null;
@@ -95,32 +74,7 @@ public class UserDatabase {
 		c.close();
 	}
 	
-	public static void createStatsTable() throws Exception {
-		Connection c = null;
-		Statement stmt = null;
-		try {
-			Class.forName("org.postgresql.Driver");
-			c = getConnection();
-			System.out.println("Opened database successfully");
-			
-			stmt = c.createStatement();
-			String sql = "CREATE TABLE STATS " +
-					"(ID INT PRIMARY KEY 		NOT NULL," +
-					"HANDSWON		 INT	    NOT NULL," +
-					"HANDSPLAYED 	 INT 		NOT NULL," +
-					"BLACKJACKS    	 INT     	NOT NULL," +
-					"MOSTMONEYWON    INT	    NOT NULL," +
-					"TOTALMONEYWON   INT        NOT NULL," +
-					"TIMECREATED    TIMESTAMP   NOT NULL," +
-					"TIMEUPDATED    TIMESTAMP   NOT NULL)";
-			stmt.executeQuery(sql);
-			stmt.close();
-		} catch (Exception e) {
-			System.err.println( e.getClass().getName() + ": " + e.getMessage());
-		}
-		System.out.println("Stats table created successfully");
-		c.close();
-	}
+	
 
 	public static JSONObject signup(String name, String email, String username, String password) throws Exception {
 		Connection c = null;

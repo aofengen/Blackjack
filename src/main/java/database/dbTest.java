@@ -1,4 +1,4 @@
-package blackjack.database;
+package database;
 
 import java.sql.DriverManager;
 import java.sql.Connection;

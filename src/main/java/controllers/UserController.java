@@ -6,11 +6,8 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
-import blackjack.models.Change;
-import blackjack.models.ChangePass;
-import blackjack.models.Login;
-import blackjack.models.Signup;
-import users.database.UserDatabase;
+import database.UserDatabase;
+import models.*;
 
 @CrossOrigin
 @RestController

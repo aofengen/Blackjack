@@ -1,4 +1,4 @@
-package poker.Console_Game;
+package poker.video_poker;
 
 public class Card {
 	private Suit suit;

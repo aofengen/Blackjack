@@ -1,9 +1,9 @@
-package blackjack.models;
+package models;
 
-public class Stats {
+public class BlackjackStats {
 	private int handsPlayed, handsWon, blackjacks, highMoney, totalMoney;
 	
-	public Stats() {
+	public BlackjackStats() {
 		this.handsPlayed = 0;
 		this.handsWon = 0;
 		this.blackjacks = 0;

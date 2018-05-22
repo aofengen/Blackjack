@@ -1,4 +1,4 @@
-package blackjack.database;
+package database;
 
 import java.net.URISyntaxException;
 import java.sql.Connection;
@@ -21,8 +21,55 @@ import org.json.JSONObject;
 
 public class BlackjackDatabase {
 	
-	public static void main(String[] args) {
-		
+	public static void main(String[] args) throws Exception {
+//		dropStatsTable();
+//		createBlackjackStatsTable();
+	}
+	
+//	private static void dropStatsTable() throws Exception {
+//	Connection c = null;
+//	Statement stmt = null;
+//	try {
+//		Class.forName("org.postgresql.Driver");
+//		c = getConnection();
+//		System.out.println("Opened database successfully");
+//		
+//		stmt = c.createStatement();
+//		String sql = "DROP TABLE STATS";
+//		stmt.executeQuery(sql);
+//		stmt.close();
+//		c.close();
+//	} catch (Exception e) {
+//		System.err.println( e.getClass().getName() + ": " + e.getMessage());
+//	}
+//	System.out.println("Table dropped successfully");
+//}
+	
+	public static void createBlackjackStatsTable() throws Exception {
+		Connection c = null;
+		Statement stmt = null;
+		try {
+			Class.forName("org.postgresql.Driver");
+			c = getConnection();
+			System.out.println("Opened database successfully");
+			
+			stmt = c.createStatement();
+			String sql = "CREATE TABLE STATS " +
+					"(ID INT PRIMARY KEY 		NOT NULL," +
+					"HANDSWON		 INT	    NOT NULL," +
+					"HANDSPLAYED 	 INT 		NOT NULL," +
+					"BLACKJACKS    	 INT     	NOT NULL," +
+					"MOSTMONEYWON    INT	    NOT NULL," +
+					"TOTALMONEYWON   INT        NOT NULL," +
+					"TIMECREATED    TIMESTAMP   NOT NULL," +
+					"TIMEUPDATED    TIMESTAMP   NOT NULL)";
+			stmt.executeQuery(sql);
+			stmt.close();
+		} catch (Exception e) {
+			System.err.println( e.getClass().getName() + ": " + e.getMessage());
+		}
+		System.out.println("Stats table created successfully");
+		c.close();
 	}
 	
 	private static Connection getConnection() throws URISyntaxException, SQLException {

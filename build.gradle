@@ -19,8 +19,8 @@ apply plugin: 'io.spring.dependency-management'
 apply plugin: "com.github.honourednihilist.gradle-postgresql-embedded"
 
 bootJar {
-	baseName = 'blackjack_java'
-	version = '1.0.0'
+	baseName = 'casino_java'
+	version = '2.0.0'
 }
 
 repositories {

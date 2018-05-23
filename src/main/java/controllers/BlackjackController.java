@@ -56,6 +56,7 @@ public class BlackjackController {
     		System.out.println(e);
     	}
     	return obj.toString();
+//    	return obj;
     }
     
     @GetMapping("/blackjack/leaderboard")

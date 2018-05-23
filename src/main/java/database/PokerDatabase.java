@@ -86,89 +86,102 @@ public static void createVideoPokerStatsTable() throws Exception {
 
 public static JSONArray getTopTen() throws Exception {
 	
-//	Connection c = null;
+	Connection c = null;
 	JSONArray array = new JSONArray();
-//	try {
-//		Class.forName("org.postgresql.Driver");
-//		c = getConnection();
-//		System.out.println("Opened database successfully");
-//		
-//	} catch (Exception e) {
-//		System.out.println(e);
-//	}
-//	
-//	try {
-//		Statement stmt = c.createStatement();
-//		Statement stmt2 = c.createStatement();
-//		ResultSet rs = stmt.executeQuery("SELECT * FROM stats ORDER BY mostmoneywon DESC LIMIT 10");
-//		int i = 0;
-//		while (i < 10) {
-//			if (rs.next()) {
-//				int id = rs.getInt("id");
-//				int money = rs.getInt("mostmoneywon");
-//				int handsWon = rs.getInt("handswon");
-//				int handsPlayed = rs.getInt("handsplayed");
-//				int totalMoneyWon = rs.getInt("totalmoneywon");
-//				int blackjacks = rs.getInt("blackjacks"); 
-//				
-//				ResultSet rs2 = stmt2.executeQuery("SELECT name FROM users WHERE id = " + id + ";");
-//				String name = "";
-//				if(rs2.next()) {
-//					name = rs2.getString("name");
-//				}
-//				JSONObject obj = new JSONObject();
-//				
-//				obj.put("place", i + 1);
-//				obj.put("name", name);
-//				obj.put("money", money);
-//				obj.put("handswon", handsWon);
-//				obj.put("handsplayed", handsPlayed);
-//				obj.put("blackjacks", blackjacks);
-//				obj.put("totalmoney", totalMoneyWon);
-//				array.put(i, obj);
-//			}
-//			
-//			i++;
-//		}
-//		stmt2.close();
-//		stmt.close();
-//	} catch (Exception e) {
-//		System.out.println(e);
-//	}
-//	c.close();
+	try {
+		Class.forName("org.postgresql.Driver");
+		c = getConnection();
+		System.out.println("Opened database successfully");
+		
+		Statement stmt = c.createStatement();
+		Statement stmt2 = c.createStatement();
+		ResultSet rs = stmt.executeQuery("SELECT * FROM videopokerstats ORDER BY highmoney DESC LIMIT 10");
+		int i = 0;
+		while (i < 10) {
+			if (rs.next()) {
+				int id = rs.getInt("id");
+				int highMoney = rs.getInt("highmoney");
+				int handsWon = rs.getInt("handswon");
+				int handsPlayed = rs.getInt("handsplayed");
+				int totalMoney = rs.getInt("totalmoney");
+				int royalFlush = rs.getInt("royalflush"); 
+				int straightFlush = rs.getInt("straightflush"); 
+				int fourKind = rs.getInt("fourkind"); 
+				int flush = rs.getInt("flush"); 
+				int straight = rs.getInt("straight"); 
+				int threeKind = rs.getInt("threekind"); 
+
+				ResultSet rs2 = stmt2.executeQuery("SELECT name FROM users WHERE id = " + id + ";");
+				String name = "";
+				if(rs2.next()) {
+					name = rs2.getString("name");
+				}
+				JSONObject obj = new JSONObject();
+				
+				obj.put("place", i + 1);
+				obj.put("name", name);
+				obj.put("money", highMoney);
+				obj.put("handswon", handsWon);
+				obj.put("handsplayed", handsPlayed);
+				obj.put("totalmoney", totalMoney);
+				obj.put("royalflush", royalFlush);
+				obj.put("straightflush", straightFlush);
+				obj.put("fourkind", fourKind);
+				obj.put("flush", flush);
+				obj.put("straight", straight);
+				obj.put("threekind", threeKind);
+
+				array.put(i, obj);
+			}
+			
+			i++;
+		}
+		stmt2.close();
+		stmt.close();
+	} catch (Exception e) {
+		System.out.println(e);
+	}
+	c.close();
 	return array;
 }
 //
 public static JSONObject getStats(int id) throws Exception {
 	Connection c = null;
-//	Statement stmt = null;
+	Statement stmt = null;
 	JSONObject obj = new JSONObject();
-//	try {
-//		Class.forName("org.postgresql.Driver");
-//		c = getConnection();
-//		System.out.println("Opened database successfully");
-//		
-//		stmt = c.createStatement();
-//		ResultSet rs = stmt.executeQuery("SELECT * FROM stats WHERE id = '" + id + "';");
-//		
-//		if (rs.next()) {
-//			obj.put("handswon", rs.getInt("handswon"));
-//			obj.put("handsplayed", rs.getInt("handsplayed"));
-//			obj.put("blackjacks", rs.getInt("blackjacks"));
-//			obj.put("mostmoneywon", rs.getInt("mostmoneywon"));
-//			obj.put("totalmoneywon", rs.getInt("totalmoneywon"));
-//		}
-//		
-//	} catch (Exception e) {
-//		System.out.println(e);
-//		obj.put("error", "Unable to get stats: " + e.toString());
-//	}
-//	stmt.close();
-//	c.close();
+	try {
+		Class.forName("org.postgresql.Driver");
+		c = getConnection();
+		System.out.println("Opened database successfully");
+		
+		stmt = c.createStatement();
+		ResultSet rs = stmt.executeQuery("SELECT * FROM videopokerstats WHERE id = '" + id + "';");
+		
+		if (rs.next()) {
+			obj.put("handswon", rs.getInt("handswon"));
+			obj.put("handsplayed", rs.getInt("handsplayed"));
+			obj.put("highmoney", rs.getInt("highmoney"));
+			obj.put("totalmoney", rs.getInt("totalmoney"));
+			obj.put("royalflush", rs.getInt("royalflush"));
+			obj.put("straightflush", rs.getInt("straightflush"));
+			obj.put("fourkind", rs.getInt("fourkind"));
+			obj.put("flush", rs.getInt("flush"));
+			obj.put("straight", rs.getInt("straight"));
+			obj.put("threekind", rs.getInt("threekind"));
+		}
+		
+	} catch (Exception e) {
+		System.out.println(e);
+		obj.put("error", "Unable to get stats: " + e.toString());
+	}
+	stmt.close();
+	c.close();
 	return obj;
 }
 
-public static JSONObject updateStatsTable(int id, int handsWon, int handsPlayed, int blackjacks, int highMoney, int totalMoney) throws Exception {
+public static JSONObject updateStatsTable(int id, int handsWon, int handsPlayed, int highMoney, int totalMoney,
+							int royalFlush, int straightFlush, int fourKind, int flush, int straight, int threeKind) throws Exception
+	{
 	Connection c = null;
 	
 	Date timeC = new Date();
@@ -178,55 +191,67 @@ public static JSONObject updateStatsTable(int id, int handsWon, int handsPlayed,
 	java.sql.Timestamp tU = new Timestamp(timeU.getTime());
 	
 	JSONObject obj = new JSONObject();
-//	try {
-//		Class.forName("org.postgresql.Driver");
-//		c = getConnection();
-//		c.setAutoCommit(false);
-//		System.out.println("Opened database successfully");
-//		
-//		PreparedStatement pstmt = null;
-//		Statement stmt = c.createStatement();
-//		ResultSet rs = stmt.executeQuery("SELECT * FROM stats WHERE id = '" + id + "';");
-//		
-//		if (rs.next()) {
-//			System.out.println("record exists. updating.");
-//			int oldHighMoney = rs.getInt("mostmoneywon");
-//			if (oldHighMoney >= highMoney) {
-//				highMoney = oldHighMoney;
-//			}
-//			
-//			pstmt = c.prepareStatement("UPDATE STATS SET HANDSWON = ?, HANDSPLAYED = ?, BLACKJACKS = ?, MOSTMONEYWON = ?, TOTALMONEYWON = ?, TIMEUPDATED = ? WHERE ID = ?");
-//				pstmt.setInt(1, rs.getInt("handswon") + handsWon);
-//				pstmt.setInt(2, rs.getInt("handsplayed") + handsPlayed);
-//				pstmt.setInt(3, rs.getInt("blackjacks") + blackjacks);
-//				pstmt.setInt(4, highMoney);
-//				pstmt.setInt(5, rs.getInt("totalmoneywon") + totalMoney);
-//				pstmt.setTimestamp(6, tU);
-//				pstmt.setInt(7, id);
-//		} else {
-//			pstmt = c.prepareStatement("INSERT INTO STATS (ID, HANDSWON, HANDSPLAYED, BLACKJACKS, MOSTMONEYWON, TOTALMONEYWON, TIMECREATED, TIMEUPDATED)"
-//	            + "VALUES (?, ?, ?, ?, ?, ?, ?, ?)");
-//			pstmt.setInt(1, id);
-//			pstmt.setInt(2, handsWon);
-//			pstmt.setInt(3, handsPlayed);
-//			pstmt.setInt(4, blackjacks);
-//			pstmt.setInt(5, highMoney);
-//			pstmt.setInt(6, totalMoney);
-//			pstmt.setTimestamp(7, tC);
-//			pstmt.setTimestamp(8, tU);	
-//		}
-//		pstmt.executeUpdate();
-//		pstmt.close();
-//		
-//		stmt.close();
-//		c.commit();
-//		obj.put("message", "Stats Successfully Updated!");
-//	} catch (Exception e) {
-//		System.out.println(e);
-//		obj.put("error", "Stat Update Failed! " + e.toString());
-//	}
-//		
-//		c.close();
+	try {
+		Class.forName("org.postgresql.Driver");
+		c = getConnection();
+		c.setAutoCommit(false);
+		System.out.println("Opened database successfully");
+		
+		PreparedStatement pstmt = null;
+		Statement stmt = c.createStatement();
+		ResultSet rs = stmt.executeQuery("SELECT * FROM videopokerstats WHERE id = '" + id + "';");
+		
+		if (rs.next()) {
+			System.out.println("record exists. updating.");
+			int oldHighMoney = rs.getInt("highmoney");
+			if (oldHighMoney >= highMoney) {
+				highMoney = oldHighMoney;
+			}
+			
+			pstmt = c.prepareStatement("UPDATE VIDEOPOKERSTATS SET HANDSWON = ?, HANDSPLAYED = ?, HIGHMONEY = ?, TOTALMONEY = ?, ROYALFLUSH = ?, STRAIGHTFLUSH = ?,"
+								     + "FOURKIND = ?, FLUSH = ?, STRAIGHT = ?, THREEKIND = ?, TIMEUPDATED = ? WHERE ID = ?");
+				pstmt.setInt(1, rs.getInt("handswon") + handsWon);
+				pstmt.setInt(2, rs.getInt("handsplayed") + handsPlayed);
+				pstmt.setInt(3, highMoney);
+				pstmt.setInt(4, rs.getInt("totalmoney") + totalMoney);
+				pstmt.setInt(5, rs.getInt("royalflush") + royalFlush);
+				pstmt.setInt(6, rs.getInt("straightflush") + straightFlush);
+				pstmt.setInt(7, rs.getInt("fourkind") + fourKind);
+				pstmt.setInt(8, rs.getInt("flush") + flush);
+				pstmt.setInt(9, rs.getInt("straight") + straight);
+				pstmt.setInt(10, rs.getInt("threekind") + threeKind);
+				pstmt.setTimestamp(11, tU);
+				pstmt.setInt(12, id);
+		} else {
+			pstmt = c.prepareStatement("INSERT INTO VIDEOPOKERSTATS (ID, HANDSWON, HANDSPLAYED, HIGHMONEY, TOTALMONEY, ROYALFLUSH, STRAIGHTFLUSH,"
+					+ "FOURKIND, FLUSH, STRAIGHT, THREEKIND, TIMECREATED, TIMEUPDATED)"
+	            + "VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)");
+			pstmt.setInt(1, id);
+			pstmt.setInt(2, handsWon);
+			pstmt.setInt(3, handsPlayed);
+			pstmt.setInt(4, highMoney);
+			pstmt.setInt(5, totalMoney);
+			pstmt.setInt(6, royalFlush);
+			pstmt.setInt(7, straightFlush);
+			pstmt.setInt(8, fourKind);
+			pstmt.setInt(9, flush);
+			pstmt.setInt(10, straight);
+			pstmt.setInt(11, threeKind);
+			pstmt.setTimestamp(12, tC);
+			pstmt.setTimestamp(13, tU);	
+		}
+		pstmt.executeUpdate();
+		pstmt.close();
+		
+		stmt.close();
+		c.commit();
+		obj.put("message", "Video Poker Stats Successfully Updated!");
+	} catch (Exception e) {
+		System.out.println(e);
+		obj.put("error", "Stat Update Failed! " + e.toString());
+	}
+		
+		c.close();
 		return obj;
 }
 	

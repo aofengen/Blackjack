@@ -60,17 +60,23 @@ public class PokerController {
     	}
     	
     	JSONObject obj = new JSONObject();
-//    	
-//    	try {
-//	    	int handsWon = stats.getHandsWon();
-//	    	int handsPlayed = stats.getHandsPlayed();
-//	    	int blackjacks = stats.getBlackjacks();
-//	    	int highMoney = stats.getHighMoney();
-//	    	int totalMoney = stats.getTotalMoney();
-//    		obj = BlackjackDatabase.updateStatsTable(id, handsWon, handsPlayed, blackjacks, highMoney, totalMoney);
-//    	} catch (Exception e) {
-//    		System.out.println(e);
-//    	}
+    	
+    	try {
+	    	int handsWon = stats.getHandsWon();
+	    	int handsPlayed = stats.getHandsPlayed();
+	    	int highMoney = stats.getHighMoney();
+	    	int totalMoney = stats.getTotalMoney();
+	    	int royalFlush = stats.getRoyalFlush();
+	    	int straightFlush = stats.getStraightFlush();
+	    	int fourKind = stats.getFourKind();
+	    	int flush = stats.getFlush();
+	    	int straight = stats.getStraight();
+	    	int threeKind = stats.getThreeKind();
+    		obj = PokerDatabase.updateStatsTable(id, handsWon, handsPlayed, highMoney, totalMoney, royalFlush, straightFlush, fourKind, flush, straight, threeKind);
+    	} catch (Exception e) {
+    		System.out.println(e);
+    	}
     	return obj.toString();
+//    	return obj;
     }
 }

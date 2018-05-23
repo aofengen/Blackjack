@@ -86,12 +86,7 @@ public class BlackjackDatabase {
 			Class.forName("org.postgresql.Driver");
 			c = getConnection();
 			System.out.println("Opened database successfully");
-			
-		} catch (Exception e) {
-			System.out.println(e);
-		}
-		
-		try {
+
 			Statement stmt = c.createStatement();
 			Statement stmt2 = c.createStatement();
 			ResultSet rs = stmt.executeQuery("SELECT * FROM blackjackstats ORDER BY mostmoneywon DESC LIMIT 10");

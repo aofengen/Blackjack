@@ -149,16 +149,12 @@ public class Game {
 		}
 		
 		ArrayList<Integer> cards = new ArrayList<Integer>();
-		System.out.println("test line 139");
 		cards = getValues(values);
-		System.out.println("test line 141");
 		
 		boolean flush = checkFlush(suits);
 		boolean straight = checkStraight(cards);
 		String pair = checkPair(values);
-		
-		System.out.println("flush: " + flush + ", straight: " + straight + ", pair: " + pair);
-		
+				
 		if (flush == true) {
 			if (straight == true) {
 				if (cards.contains(14)) {
@@ -216,7 +212,6 @@ public class Game {
 		}
 		
 		while (numbers.contains(1)) {
-			System.out.println("testing ace");
 			if (numbers.contains(2) && numbers.contains(3) && numbers.contains(4) && numbers.contains(5)) {
 				break;
 			} else {

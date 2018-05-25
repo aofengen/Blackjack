@@ -22,7 +22,7 @@ import org.json.JSONObject;
 public class PokerDatabase {
 
 public static void main(String[] args) throws Exception {
-		createVideoPokerStatsTable();
+//		createVideoPokerStatsTable();
 	}
 
 private static Connection getConnection() throws URISyntaxException, SQLException {
@@ -70,6 +70,7 @@ public static void createVideoPokerStatsTable() throws Exception {
 				"ROYALFLUSH    	 INT     	NOT NULL," +
 				"STRAIGHTFLUSH   INT	    NOT NULL," +
 				"FOURKIND	     INT        NOT NULL," +
+				"FULLHOUSE		 INT		NOT NULL," +
 				"FLUSH			 INT	    NOT NULL," +
 				"STRAIGHT		 INT	    NOT NULL," +
 				"THREEKIND		 INT	    NOT NULL," +
@@ -77,10 +78,10 @@ public static void createVideoPokerStatsTable() throws Exception {
 				"TIMEUPDATED    TIMESTAMP   NOT NULL)";
 		stmt.executeQuery(sql);
 		stmt.close();
+		System.out.println("Video Poker stats table created successfully");
 	} catch (Exception e) {
 		System.err.println( e.getClass().getName() + ": " + e.getMessage());
 	}
-	System.out.println("Video Poker stats table created successfully");
 	c.close();
 }
 
@@ -107,6 +108,7 @@ public static JSONArray getTopTen() throws Exception {
 				int royalFlush = rs.getInt("royalflush"); 
 				int straightFlush = rs.getInt("straightflush"); 
 				int fourKind = rs.getInt("fourkind"); 
+				int fullHouse = rs.getInt("fullhouse");
 				int flush = rs.getInt("flush"); 
 				int straight = rs.getInt("straight"); 
 				int threeKind = rs.getInt("threekind"); 
@@ -127,6 +129,7 @@ public static JSONArray getTopTen() throws Exception {
 				obj.put("royalflush", royalFlush);
 				obj.put("straightflush", straightFlush);
 				obj.put("fourkind", fourKind);
+				obj.put("fullhouse", fullHouse);
 				obj.put("flush", flush);
 				obj.put("straight", straight);
 				obj.put("threekind", threeKind);
@@ -165,6 +168,7 @@ public static JSONObject getStats(int id) throws Exception {
 			obj.put("royalflush", rs.getInt("royalflush"));
 			obj.put("straightflush", rs.getInt("straightflush"));
 			obj.put("fourkind", rs.getInt("fourkind"));
+			obj.put("fullhouse", rs.getInt("fullhouse"));
 			obj.put("flush", rs.getInt("flush"));
 			obj.put("straight", rs.getInt("straight"));
 			obj.put("threekind", rs.getInt("threekind"));
@@ -180,7 +184,7 @@ public static JSONObject getStats(int id) throws Exception {
 }
 
 public static JSONObject updateStatsTable(int id, int handsWon, int handsPlayed, int highMoney, int totalMoney,
-							int royalFlush, int straightFlush, int fourKind, int flush, int straight, int threeKind) throws Exception
+							int royalFlush, int straightFlush, int fourKind, int fullHouse, int flush, int straight, int threeKind) throws Exception
 	{
 	Connection c = null;
 	
@@ -209,7 +213,7 @@ public static JSONObject updateStatsTable(int id, int handsWon, int handsPlayed,
 			}
 			
 			pstmt = c.prepareStatement("UPDATE VIDEOPOKERSTATS SET HANDSWON = ?, HANDSPLAYED = ?, HIGHMONEY = ?, TOTALMONEY = ?, ROYALFLUSH = ?, STRAIGHTFLUSH = ?,"
-								     + "FOURKIND = ?, FLUSH = ?, STRAIGHT = ?, THREEKIND = ?, TIMEUPDATED = ? WHERE ID = ?");
+								     + "FOURKIND = ?, FULLHOUSE = ?, FLUSH = ?, STRAIGHT = ?, THREEKIND = ?, TIMEUPDATED = ? WHERE ID = ?");
 				pstmt.setInt(1, rs.getInt("handswon") + handsWon);
 				pstmt.setInt(2, rs.getInt("handsplayed") + handsPlayed);
 				pstmt.setInt(3, highMoney);
@@ -217,15 +221,16 @@ public static JSONObject updateStatsTable(int id, int handsWon, int handsPlayed,
 				pstmt.setInt(5, rs.getInt("royalflush") + royalFlush);
 				pstmt.setInt(6, rs.getInt("straightflush") + straightFlush);
 				pstmt.setInt(7, rs.getInt("fourkind") + fourKind);
-				pstmt.setInt(8, rs.getInt("flush") + flush);
-				pstmt.setInt(9, rs.getInt("straight") + straight);
-				pstmt.setInt(10, rs.getInt("threekind") + threeKind);
-				pstmt.setTimestamp(11, tU);
-				pstmt.setInt(12, id);
+				pstmt.setInt(8, rs.getInt("fullhouse") + fullHouse);
+				pstmt.setInt(9, rs.getInt("flush") + flush);
+				pstmt.setInt(10, rs.getInt("straight") + straight);
+				pstmt.setInt(11, rs.getInt("threekind") + threeKind);
+				pstmt.setTimestamp(12, tU);
+				pstmt.setInt(13, id);
 		} else {
 			pstmt = c.prepareStatement("INSERT INTO VIDEOPOKERSTATS (ID, HANDSWON, HANDSPLAYED, HIGHMONEY, TOTALMONEY, ROYALFLUSH, STRAIGHTFLUSH,"
-					+ "FOURKIND, FLUSH, STRAIGHT, THREEKIND, TIMECREATED, TIMEUPDATED)"
-	            + "VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)");
+					+ "FOURKIND, FULLHOUSE, FLUSH, STRAIGHT, THREEKIND, TIMECREATED, TIMEUPDATED)"
+	            + "VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)");
 			pstmt.setInt(1, id);
 			pstmt.setInt(2, handsWon);
 			pstmt.setInt(3, handsPlayed);
@@ -234,11 +239,12 @@ public static JSONObject updateStatsTable(int id, int handsWon, int handsPlayed,
 			pstmt.setInt(6, royalFlush);
 			pstmt.setInt(7, straightFlush);
 			pstmt.setInt(8, fourKind);
-			pstmt.setInt(9, flush);
-			pstmt.setInt(10, straight);
-			pstmt.setInt(11, threeKind);
-			pstmt.setTimestamp(12, tC);
-			pstmt.setTimestamp(13, tU);	
+			pstmt.setInt(9, fullHouse);
+			pstmt.setInt(10, flush);
+			pstmt.setInt(11, straight);
+			pstmt.setInt(12, threeKind);
+			pstmt.setTimestamp(13, tC);
+			pstmt.setTimestamp(14, tU);	
 		}
 		pstmt.executeUpdate();
 		pstmt.close();

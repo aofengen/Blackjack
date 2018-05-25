@@ -69,10 +69,11 @@ public class PokerController {
 	    	int royalFlush = stats.getRoyalFlush();
 	    	int straightFlush = stats.getStraightFlush();
 	    	int fourKind = stats.getFourKind();
+	    	int fullHouse = stats.getFullHouse();
 	    	int flush = stats.getFlush();
 	    	int straight = stats.getStraight();
 	    	int threeKind = stats.getThreeKind();
-    		obj = PokerDatabase.updateStatsTable(id, handsWon, handsPlayed, highMoney, totalMoney, royalFlush, straightFlush, fourKind, flush, straight, threeKind);
+    		obj = PokerDatabase.updateStatsTable(id, handsWon, handsPlayed, highMoney, totalMoney, royalFlush, straightFlush, fourKind, fullHouse, flush, straight, threeKind);
     	} catch (Exception e) {
     		System.out.println(e);
     	}

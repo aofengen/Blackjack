@@ -65,10 +65,10 @@ public class BlackjackDatabase {
 					"TIMEUPDATED    TIMESTAMP   NOT NULL)";
 			stmt.executeQuery(sql);
 			stmt.close();
+			System.out.println("Blackjack stats table created successfully");
 		} catch (Exception e) {
 			System.err.println( e.getClass().getName() + ": " + e.getMessage());
 		}
-		System.out.println("Blackjack stats table created successfully");
 		c.close();
 	}
 	

@@ -2,7 +2,7 @@ package models;
 
 public class PokerStats {
 	
-	private int highMoney, totalMoney, handsPlayed, handsWon, royalFlush, straightFlush, fourKind, flush, straight, threeKind;
+	private int highMoney, totalMoney, handsPlayed, handsWon, royalFlush, straightFlush, fourKind, fullHouse, flush, straight, threeKind;
 	
 	public PokerStats() {
 		this.highMoney = 0;
@@ -12,6 +12,7 @@ public class PokerStats {
 		this.royalFlush = 0;
 		this.straightFlush = 0;
 		this.fourKind = 0;
+		this.fullHouse = 0;
 		this.flush = 0;
 		this.straight = 0;
 		this.threeKind = 0;
@@ -71,6 +72,14 @@ public class PokerStats {
 	
 	public void setFourKind(int fK) {
 		this.fourKind = fK;
+	}
+	
+	public int getFullHouse() {
+		return this.fullHouse;
+	}
+	
+	public void setFullHouse(int fH) {
+		this.fullHouse = fH;
 	}
 	
 	public int getFlush() {

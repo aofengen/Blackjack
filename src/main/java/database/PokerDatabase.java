@@ -26,10 +26,10 @@ public static void main(String[] args) throws Exception {
 	}
 
 private static Connection getConnection() throws URISyntaxException, SQLException {
-//    String dbUrl = System.getenv("JDBC_DATABASE_URL");
-//	return DriverManager.getConnection(dbUrl);
-    return DriverManager.getConnection("jdbc:postgresql://127.0.0.1:5432/blackjack", "postgres",
-		"9074dewberry1136");
+    String dbUrl = System.getenv("JDBC_DATABASE_URL");
+	return DriverManager.getConnection(dbUrl);
+//    return DriverManager.getConnection("jdbc:postgresql://127.0.0.1:5432/blackjack", "postgres",
+//		"9074dewberry1136");
 }
 
 //private static void dropVideoPokerStatsTable() throws Exception {

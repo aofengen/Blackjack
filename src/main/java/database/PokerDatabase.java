@@ -199,12 +199,12 @@ public static JSONObject updateStatsTable(int id, int handsWon, int handsPlayed,
 		Class.forName("org.postgresql.Driver");
 		c = getConnection();
 		c.setAutoCommit(false);
-		System.out.println("Opened database successfully");
+		System.out.println("Opened database successfully.");
 		
 		PreparedStatement pstmt = null;
 		Statement stmt = c.createStatement();
 		ResultSet rs = stmt.executeQuery("SELECT * FROM videopokerstats WHERE id = '" + id + "';");
-		
+
 		if (rs.next()) {
 			System.out.println("record exists. updating.");
 			int oldHighMoney = rs.getInt("highmoney");

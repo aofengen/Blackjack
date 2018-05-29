@@ -55,7 +55,7 @@ public class PokerStats {
 	}
 	
 	public void setRoyalFlush(int rF) {
-		this.handsWon = rF;
+		this.royalFlush = rF;
 	}
 	
 	public int getStraightFlush() {

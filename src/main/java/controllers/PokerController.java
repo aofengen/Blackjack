@@ -13,7 +13,7 @@ import poker.video_poker.*;
 import models.PokerStats;
 import database.PokerDatabase;
 
-@CrossOrigin
+@CrossOrigin(origins = "*")
 @RestController
 public class PokerController {
 	

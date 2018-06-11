@@ -9,7 +9,7 @@ import org.springframework.web.bind.annotation.RestController;
 import database.UserDatabase;
 import models.*;
 
-@CrossOrigin(origins = "https://myblackjackapp.firebaseapp.com/")
+@CrossOrigin(origins = "*")
 @RestController
 public class UserController {
 	

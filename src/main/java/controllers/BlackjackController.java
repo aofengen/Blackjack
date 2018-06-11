@@ -14,7 +14,7 @@ import models.BlackjackStats;
 import database.BlackjackDatabase;
 
 
-@CrossOrigin
+@CrossOrigin(origins = "*")
 @RestController
 public class BlackjackController {
 
